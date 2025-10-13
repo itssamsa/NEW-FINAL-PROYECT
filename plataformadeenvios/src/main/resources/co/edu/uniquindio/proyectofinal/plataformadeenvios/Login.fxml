@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="350" prefWidth="400" style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.proyectofinal.plataformadeenvios.viewController.LoginViewController">
+
+    <VBox alignment="CENTER" spacing="10" style="-fx-background-color: white; -fx-border-color: #ddd; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 20;" AnchorPane.bottomAnchor="20" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20" AnchorPane.topAnchor="20">
+
+        <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Iniciar Sesión" />
+        <PasswordField fx:id="txtContrasena" maxWidth="250" promptText="Id" />
+
+        <Label text="Tipo de cuenta:" />
+        <ComboBox fx:id="cmbTipoCuenta" prefWidth="250">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Usuario" />
+                    <String fx:value="Repartidor" />
+                    <String fx:value="Administrador" />
+                </FXCollections>
+            </items>
+        </ComboBox>
+
+        <Button fx:id="btnLogin" onAction="#handleLogin" style="-fx-background-color: #2196f3; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="Ingresar" />
+
+        <Label style="-fx-font-size: 12px;" text="¿No tienes cuenta?" />
+        <Button fx:id="btnRegistro" onAction="#handleRegistro" style="-fx-background-color: #4caf50; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="Registrar" />
+
+        <Label fx:id="lblMensaje" style="-fx-font-size: 12px;" textFill="red" />
+    </VBox>
+</AnchorPane>

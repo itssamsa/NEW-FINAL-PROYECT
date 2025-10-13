@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.AdminController"
+      spacing="10" alignment="CENTER" style="-fx-padding: 20;">
+    <Label text="Panel de Administrador"/>
+    <Button text="Ver repartidores" onAction="#handleVerRepartidores"/>
+    <Button text="Ver envíos" onAction="#handleVerEnvios"/>
+    <Button text="Cerrar sesión" onAction="#handleCerrarSesion"/>
+</VBox>
