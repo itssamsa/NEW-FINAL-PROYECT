@@ -3,7 +3,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<TabPane xmlns:fx="http://javafx.com/fxml" fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.LoginController">
+<TabPane xmlns:fx="http://javafx.com/fxml"
+         fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.LoginController">
+
     <tabs>
         <Tab text="Administrador" closable="false">
             <content>
@@ -12,10 +14,19 @@
                 </AnchorPane>
             </content>
         </Tab>
+
         <Tab text="Usuario" closable="false">
             <content>
                 <AnchorPane>
                     <fx:include source="usuario.fxml"/>
+                </AnchorPane>
+            </content>
+        </Tab>
+
+        <Tab text="Envío" closable="false">
+            <content>
+                <AnchorPane>
+                    <fx:include source="envio.fxml"/>
                 </AnchorPane>
             </content>
         </Tab>
