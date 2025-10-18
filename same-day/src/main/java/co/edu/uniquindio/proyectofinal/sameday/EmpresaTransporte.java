@@ -74,4 +74,5 @@ public class EmpresaTransporte {
     public java.util.List<Usuario> listarUsuarios() { return usuarioService.listarTodos(); }
     public java.util.List<Envio> listarEnvios() { return envioService.listar(); }
     public java.util.List<Repartidor> listarRepartidores() { return repartidorService.listar(); }
+
 }

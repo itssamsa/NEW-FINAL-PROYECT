@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<TabPane xmlns:fx="http://javafx.com/fxml"
-         fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.LoginController">
+<TabPane prefHeight="629.0" prefWidth="854.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.LoginController">
 
     <tabs>
-        <Tab text="Administrador" closable="false">
+        <Tab closable="false" text="Administrador">
             <content>
                 <AnchorPane>
-                    <fx:include source="admin.fxml"/>
+                    <fx:include source="admin.fxml" />
                 </AnchorPane>
             </content>
         </Tab>
 
-        <Tab text="Usuario" closable="false">
+        <Tab closable="false" text="Usuario">
             <content>
                 <AnchorPane>
-                    <fx:include source="usuario.fxml"/>
+                    <fx:include source="usuario.fxml" />
                 </AnchorPane>
             </content>
         </Tab>
 
-        <Tab text="Envío" closable="false">
+        <Tab closable="false" text="Envío">
             <content>
                 <AnchorPane>
-                    <fx:include source="envio.fxml"/>
+                    <fx:include source="envio.fxml" />
                 </AnchorPane>
             </content>
         </Tab>
