@@ -1,168 +1,123 @@
 package co.edu.uniquindio.proyectofinal.sameday.viewController;
 
-import co.edu.uniquindio.proyectofinal.sameday.model.Direccion;
-import co.edu.uniquindio.proyectofinal.sameday.model.Envio;
-import co.edu.uniquindio.proyectofinal.sameday.model.Tarifa;
-import co.edu.uniquindio.proyectofinal.sameday.model.Usuario;
-import co.edu.uniquindio.proyectofinal.sameday.model.decorator.*;
-import co.edu.uniquindio.proyectofinal.sameday.model.enums.EstadoEnvio;
-import co.edu.uniquindio.proyectofinal.sameday.model.enums.ServicioAdicional;
-import co.edu.uniquindio.proyectofinal.sameday.model.factoryMethod.*;
+import co.edu.uniquindio.proyectofinal.sameday.model.*;
+import co.edu.uniquindio.proyectofinal.sameday.model.enums.*;
+import co.edu.uniquindio.proyectofinal.sameday.model.strategy.*;
 import co.edu.uniquindio.proyectofinal.sameday.factory.ModelFactory;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.Alert.AlertType;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-
 import java.time.LocalDate;
 
 public class EnvioController {
 
     @FXML private ComboBox<Direccion> cbOrigen;
     @FXML private ComboBox<Direccion> cbDestino;
-    @FXML private ComboBox<EstadoEnvio> cbEstado;
     @FXML private TextField txtPeso;
     @FXML private TextField txtVolumen;
+    @FXML private ComboBox<EstadoEnvio> cbEstado;
     @FXML private DatePicker dpFechaEntrega;
+    @FXML private Label lblCostoTotal;
+    @FXML private Label lblDesglose;
+    @FXML private ComboBox<String> cbEstrategia;
 
+    // Checkboxes
     @FXML private CheckBox chkSeguro;
     @FXML private CheckBox chkPrioridad;
     @FXML private CheckBox chkFirma;
     @FXML private CheckBox chkRastreo;
     @FXML private CheckBox chkNocturna;
 
-    @FXML private Label lblCostoTotal;
-    @FXML private Label lblDesglose;
-
-    private Tarifa tarifaBase;
     private Envio envioActual;
 
     @FXML
     public void initialize() {
-        cbEstado.setItems(FXCollections.observableArrayList(EstadoEnvio.values()));
+        cbEstado.getItems().addAll(EstadoEnvio.values());
+        cbEstrategia.getItems().addAll("Por peso", "Por distancia", "Por prioridad");
 
-        // Direcciones de ejemplo
-        ObservableList<Direccion> direcciones = FXCollections.observableArrayList(
-                new Direccion("D1", "Casa", "Calle 10 #5-20", "Armenia", "4.534, -75.672"),
-                new Direccion("D2", "Oficina", "Av Bolívar #23-45", "Armenia", "4.537, -75.670")
+        // Carga de direcciones simuladas
+        cbOrigen.getItems().addAll(
+                new Direccion("D1", "Casa", "Calle 1", "Ciudad A", "1,1"),
+                new Direccion("D2", "Oficina", "Calle 2", "Ciudad B", "2,2")
         );
-        cbOrigen.setItems(direcciones);
-        cbDestino.setItems(direcciones);
+        cbDestino.getItems().addAll(cbOrigen.getItems());
 
-        // Tarifa base ejemplo
-        tarifaBase = new Tarifa("T1", 10.0, 1.0, 1.0, 1.0, 5.0, 10.0);
+        dpFechaEntrega.setValue(LocalDate.now().plusDays(3)); // fecha estimada
     }
 
+    // 🔹 Calcular tarifa según la estrategia seleccionada
     @FXML
-    public void calcularTarifa() {
+    private void calcularTarifa() {
         try {
             double peso = Double.parseDouble(txtPeso.getText());
             double volumen = Double.parseDouble(txtVolumen.getText());
 
-            // ✅ Obtener un usuario existente (el primero en la lista)
-            Usuario usuario = ModelFactory.getInstance().getUsuarioService()
-                    .listarTodos().stream().findFirst().orElse(null);
+            Usuario usuario = ModelFactory.getInstance()
+                    .getUsuarioService().listarTodos().stream().findFirst().orElse(null);
 
             if (usuario == null) {
                 mostrarAlerta("Error", "No hay usuarios registrados. Cree un usuario primero.");
                 return;
             }
 
-            // Crear envío base
-            envioActual = new Envio(
-                    "E1",
-                    cbOrigen.getValue(),
-                    cbDestino.getValue(),
-                    peso,
-                    volumen,
-                    usuario
-            );
+            envioActual = new Envio("E1", cbOrigen.getValue(), cbDestino.getValue(), peso, volumen, usuario);
 
-            double costo = tarifaBase.getCostoBase()
-                    + (peso * tarifaBase.getCostoPorKg())
-                    + (volumen * tarifaBase.getCostoPorM3());
+            // Agregar servicios adicionales seleccionados
+            if (chkSeguro.isSelected()) envioActual.getServiciosAdicionales().add(ServicioAdicional.SEGURO);
+            if (chkPrioridad.isSelected()) envioActual.getServiciosAdicionales().add(ServicioAdicional.PRIORIDAD);
+            if (chkFirma.isSelected()) envioActual.getServiciosAdicionales().add(ServicioAdicional.FIRMA_REQUERIDA);
 
-            // Aplicar factories
-            if (chkSeguro.isSelected()) {
-                ServicioAdicionalFactory factory = new SeguroFactory();
-                envioActual.addServicioAdicional(factory.crearServicio());
-                envioActual = new EnvioConSeguro(envioActual);
-            }
-            if (chkPrioridad.isSelected()) {
-                ServicioAdicionalFactory factory = new PrioridadFactory();
-                envioActual.addServicioAdicional(factory.crearServicio());
-                costo += tarifaBase.getRecargoPrioridad();
-            }
-            if (chkFirma.isSelected()) {
-                ServicioAdicionalFactory factory = new FirmaRequeridaFactory();
-                envioActual.addServicioAdicional(factory.crearServicio());
-                costo += 3.0;
+            // --- Elegir estrategia ---
+            EstrategiaTarifa estrategia;
+            switch (cbEstrategia.getValue()) {
+                case "Por distancia" -> estrategia = new TarifaPorDistancia();
+                case "Por prioridad" -> estrategia = new TarifaPorPrioridad();
+                default -> estrategia = new TarifaPorPeso();
             }
 
-            // Aplicar decorators
-            if (chkRastreo.isSelected()) {
-                envioActual = new EnvioConRastreoPremium(envioActual);
-            }
-            if (chkNocturna.isSelected()) {
-                envioActual = new EnvioConEntregaNocturna(envioActual);
-            }
+            double costo = estrategia.calcularTarifa(envioActual);
+            lblCostoTotal.setText("Costo total estimado: $" + costo);
+            lblDesglose.setText("Estrategia aplicada: " + estrategia.descripcion());
 
-            double costoTotal = envioActual.getCosto() + costo;
-            lblCostoTotal.setText(String.format("Costo total estimado: $%.2f", costoTotal));
-
-            String desglose = String.format(
-                    "Base: $%.2f\nPeso: $%.2f\nVolumen: $%.2f\nServicios: $%.2f",
-                    tarifaBase.getCostoBase(),
-                    peso * tarifaBase.getCostoPorKg(),
-                    volumen * tarifaBase.getCostoPorM3(),
-                    (costoTotal - tarifaBase.getCostoBase() - peso - volumen)
-            );
-            lblDesglose.setText("Desglose de tarifa:\n" + desglose);
-
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "Ingrese valores numéricos válidos para peso y volumen.");
         } catch (Exception e) {
-            mostrarAlerta("Error", "Complete todos los campos antes de calcular.");
+            mostrarAlerta("Error", "Datos inválidos o incompletos. Verifique los campos.");
         }
     }
 
     @FXML
-    public void confirmarEnvio() {
+    private void confirmarEnvio() {
         if (envioActual == null) {
-            mostrarAlerta("Advertencia", "Primero calcule la tarifa.");
+            mostrarAlerta("Error", "Primero calcule la tarifa antes de confirmar.");
             return;
         }
-
-        envioActual.setEstado(cbEstado.getValue());
-        envioActual.setFechaEstimadaEntrega(dpFechaEntrega.getValue() != null
-                ? dpFechaEntrega.getValue().atStartOfDay()
-                : LocalDate.now().atStartOfDay());
-
-        mostrarAlerta("Éxito", "El envío ha sido confirmado correctamente.");
+        mostrarAlerta("Confirmación", "El envío ha sido registrado correctamente.");
     }
 
     @FXML
-    public void cancelarEnvio() {
+    private void cancelarEnvio() {
+        mostrarAlerta("Cancelación", "El envío ha sido cancelado.");
+        limpiarCampos();
+    }
+
+    // 🧹 Limpieza
+    private void limpiarCampos() {
         txtPeso.clear();
         txtVolumen.clear();
         cbOrigen.getSelectionModel().clearSelection();
         cbDestino.getSelectionModel().clearSelection();
-        cbEstado.getSelectionModel().clearSelection();
+        cbEstrategia.getSelectionModel().clearSelection();
+        lblCostoTotal.setText("Costo total estimado: $");
+        lblDesglose.setText("Desglose de tarifa:");
         chkSeguro.setSelected(false);
         chkPrioridad.setSelected(false);
         chkFirma.setSelected(false);
         chkRastreo.setSelected(false);
         chkNocturna.setSelected(false);
-        lblCostoTotal.setText("Costo total estimado: $");
-        lblDesglose.setText("Desglose de tarifa:");
-        envioActual = null;
     }
 
+    // ⚠️ Alertas genéricas
     private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alerta = new Alert(AlertType.INFORMATION);
+        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
         alerta.setTitle(titulo);
-        alerta.setHeaderText(null);
         alerta.setContentText(mensaje);
         alerta.showAndWait();
     }
