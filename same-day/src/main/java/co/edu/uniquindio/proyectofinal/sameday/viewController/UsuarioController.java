@@ -105,7 +105,10 @@ public class UsuarioController {
                 .add(new Direccion("D-" + txtCedula.getText(), "Casa", txtDireccion.getText(), "Ciudad", "0,0"));
 
         usuarioService.actualizarUsuario(usuarioSeleccionado);
-        cargarUsuarios();
+
+        // 🔹 Refrescar tabla para que se vean los cambios
+        tablaUsuarios.refresh();
+
         limpiarCampos();
         mostrarAlerta("Éxito", "Usuario actualizado correctamente.");
     }
