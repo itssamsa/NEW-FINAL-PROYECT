@@ -1,7 +1,13 @@
 package co.edu.uniquindio.proyectofinal.sameday.viewController;
 
 import co.edu.uniquindio.proyectofinal.sameday.model.*;
+import co.edu.uniquindio.proyectofinal.sameday.model.decorator.EnvioConEntregaNocturna;
+import co.edu.uniquindio.proyectofinal.sameday.model.decorator.EnvioConRastreoPremium;
+import co.edu.uniquindio.proyectofinal.sameday.model.decorator.EnvioConSeguro;
 import co.edu.uniquindio.proyectofinal.sameday.model.enums.*;
+import co.edu.uniquindio.proyectofinal.sameday.model.factoryMethod.FirmaRequeridaFactory;
+import co.edu.uniquindio.proyectofinal.sameday.model.factoryMethod.PrioridadFactory;
+import co.edu.uniquindio.proyectofinal.sameday.model.factoryMethod.ServicioAdicionalFactory;
 import co.edu.uniquindio.proyectofinal.sameday.model.strategy.*;
 import co.edu.uniquindio.proyectofinal.sameday.factory.ModelFactory;
 import javafx.fxml.FXML;
@@ -20,7 +26,7 @@ public class EnvioController {
     @FXML private Label lblDesglose;
     @FXML private ComboBox<String> cbEstrategia;
 
-    // Checkboxes
+
     @FXML private CheckBox chkSeguro;
     @FXML private CheckBox chkPrioridad;
     @FXML private CheckBox chkFirma;
@@ -34,17 +40,17 @@ public class EnvioController {
         cbEstado.getItems().addAll(EstadoEnvio.values());
         cbEstrategia.getItems().addAll("Por peso", "Por distancia", "Por prioridad");
 
-        // Carga de direcciones simuladas
+
         cbOrigen.getItems().addAll(
                 new Direccion("D1", "Casa", "Calle 1", "Ciudad A", "1,1"),
                 new Direccion("D2", "Oficina", "Calle 2", "Ciudad B", "2,2")
         );
         cbDestino.getItems().addAll(cbOrigen.getItems());
 
-        dpFechaEntrega.setValue(LocalDate.now().plusDays(3)); // fecha estimada
+        dpFechaEntrega.setValue(LocalDate.now().plusDays(3));
     }
 
-    // 🔹 Calcular tarifa según la estrategia seleccionada
+
     @FXML
     private void calcularTarifa() {
         try {
@@ -61,12 +67,42 @@ public class EnvioController {
 
             envioActual = new Envio("E1", cbOrigen.getValue(), cbDestino.getValue(), peso, volumen, usuario);
 
-            // Agregar servicios adicionales seleccionados
-            if (chkSeguro.isSelected()) envioActual.getServiciosAdicionales().add(ServicioAdicional.SEGURO);
-            if (chkPrioridad.isSelected()) envioActual.getServiciosAdicionales().add(ServicioAdicional.PRIORIDAD);
-            if (chkFirma.isSelected()) envioActual.getServiciosAdicionales().add(ServicioAdicional.FIRMA_REQUERIDA);
+            double costoAdicional = 0.0;
 
-            // --- Elegir estrategia ---
+            if (chkSeguro.isSelected()) {
+                envioActual = new EnvioConSeguro(envioActual);
+                costoAdicional += 10.0;
+                envioActual.addServicioAdicional(ServicioAdicional.SEGURO);
+            }
+
+            if (chkRastreo.isSelected()) {
+                envioActual = new EnvioConRastreoPremium(envioActual);
+                costoAdicional += 5.0;
+                envioActual.addServicioAdicional(ServicioAdicional.RASTREO_PREMIUM);
+            }
+
+            if (chkNocturna.isSelected()) {
+                envioActual = new EnvioConEntregaNocturna(envioActual);
+                costoAdicional += 8.0;
+                envioActual.addServicioAdicional(ServicioAdicional.ENTREGA_NOCTURNA);
+            }
+
+
+            if (chkPrioridad.isSelected()) {
+                ServicioAdicionalFactory prioridadFactory = new PrioridadFactory();
+                ServicioAdicional servicio = prioridadFactory.crearServicio();
+                envioActual.addServicioAdicional(servicio);
+                costoAdicional += 7.0;
+            }
+
+            if (chkFirma.isSelected()) {
+                ServicioAdicionalFactory firmaFactory = new FirmaRequeridaFactory();
+                ServicioAdicional servicio = firmaFactory.crearServicio();
+                envioActual.addServicioAdicional(servicio);
+                costoAdicional += 4.0;
+            }
+
+
             EstrategiaTarifa estrategia;
             switch (cbEstrategia.getValue()) {
                 case "Por distancia" -> estrategia = new TarifaPorDistancia();
@@ -74,14 +110,24 @@ public class EnvioController {
                 default -> estrategia = new TarifaPorPeso();
             }
 
-            double costo = estrategia.calcularTarifa(envioActual);
-            lblCostoTotal.setText("Costo total estimado: $" + costo);
-            lblDesglose.setText("Estrategia aplicada: " + estrategia.descripcion());
+            double costoBase = estrategia.calcularTarifa(envioActual);
+            double costoFinal = costoBase + costoAdicional;
+
+
+            lblCostoTotal.setText("Costo total estimado: $" + costoFinal);
+            lblDesglose.setText(
+                    "Estrategia aplicada: " + estrategia.descripcion() +
+                            "\nCosto base: $" + costoBase +
+                            "\nServicios adicionales: " + envioActual.getServiciosAdicionales() +
+                            "\nCosto adicional: $" + costoAdicional
+            );
 
         } catch (Exception e) {
             mostrarAlerta("Error", "Datos inválidos o incompletos. Verifique los campos.");
+            e.printStackTrace();
         }
     }
+
 
     @FXML
     private void confirmarEnvio() {
@@ -98,7 +144,7 @@ public class EnvioController {
         limpiarCampos();
     }
 
-    // 🧹 Limpieza
+
     private void limpiarCampos() {
         txtPeso.clear();
         txtVolumen.clear();
@@ -114,7 +160,7 @@ public class EnvioController {
         chkNocturna.setSelected(false);
     }
 
-    // ⚠️ Alertas genéricas
+
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);
         alerta.setTitle(titulo);

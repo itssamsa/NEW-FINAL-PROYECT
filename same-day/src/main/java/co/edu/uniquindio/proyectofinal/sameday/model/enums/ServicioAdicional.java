@@ -4,5 +4,7 @@ public enum ServicioAdicional {
     SEGURO,
     FRAGIL,
     FIRMA_REQUERIDA,
-    PRIORIDAD
+    PRIORIDAD,
+    RASTREO_PREMIUM,
+    ENTREGA_NOCTURNA
 }

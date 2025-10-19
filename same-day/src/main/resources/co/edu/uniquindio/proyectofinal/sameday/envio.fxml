@@ -5,10 +5,10 @@
 
 <AnchorPane prefHeight="600" prefWidth="800" style="-fx-background-color: #f9f9f9; -fx-padding: 20;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.EnvioController">
 
-    <!-- Título -->
+
     <Label fx:id="lblTitulo" layoutX="310" layoutY="20" style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Gestión de Envíos" />
 
-    <!-- Campos principales -->
+
     <Label layoutX="50" layoutY="80" text="Origen:" />
     <ComboBox fx:id="cbOrigen" layoutX="150" layoutY="75" prefWidth="200" />
 
@@ -27,27 +27,27 @@
     <Label layoutX="50" layoutY="180" text="Fecha estimada:" />
     <DatePicker fx:id="dpFechaEntrega" layoutX="170" layoutY="175" />
 
-    <!-- Estrategia -->
+
     <Label layoutX="399.0" layoutY="180.0" text="Tipo de cálculo:" />
     <ComboBox fx:id="cbEstrategia" layoutX="502.0" layoutY="175.0" prefWidth="250" />
 
-    <!-- Servicios adicionales -->
+
     <Label layoutX="50.0" layoutY="237.0" style="-fx-font-weight: bold;" text="Servicios adicionales:" />
     <CheckBox fx:id="chkSeguro" layoutX="47.0" layoutY="282.0" text="Seguro" />
     <CheckBox fx:id="chkPrioridad" layoutX="183.0" layoutY="282.0" text="Prioritario" />
     <CheckBox fx:id="chkFirma" layoutX="324.0" layoutY="282.0" text="Firma requerida" />
 
-    <!-- Características opcionales -->
+
     <Label layoutX="47.0" layoutY="331.0" style="-fx-font-weight: bold;" text="Características opcionales:" />
     <CheckBox fx:id="chkRastreo" layoutX="50.0" layoutY="372.0" text="Rastreo premium" />
     <CheckBox fx:id="chkNocturna" layoutX="244.0" layoutY="372.0" text="Entrega nocturna" />
 
-    <!-- Botones -->
+
     <Button layoutX="107.0" layoutY="428.0" onAction="#calcularTarifa" prefWidth="130" text="Calcular tarifa" />
     <Button layoutX="310.0" layoutY="428.0" onAction="#confirmarEnvio" prefWidth="150" text="Confirmar envío" />
     <Button layoutX="546.0" layoutY="426.0" onAction="#cancelarEnvio" prefWidth="100" text="Cancelar" />
 
-    <!-- Resultados -->
+
     <Label layoutX="51.0" layoutY="488.0" style="-fx-font-weight: bold;" text="Resumen del envío:" />
     <Label fx:id="lblCostoTotal" layoutX="74.0" layoutY="518.0" text="Costo total estimado: $" />
     <Label fx:id="lblDesglose" layoutX="76.0" layoutY="549.0" text="Estrategia aplicada:" />

@@ -106,7 +106,7 @@ public class UsuarioController {
 
         usuarioService.actualizarUsuario(usuarioSeleccionado);
 
-        // 🔹 Refrescar tabla para que se vean los cambios
+
         tablaUsuarios.refresh();
 
         limpiarCampos();
@@ -127,7 +127,6 @@ public class UsuarioController {
         mostrarAlerta("Éxito", "Usuario eliminado correctamente.");
     }
 
-    // 🔍 Métodos auxiliares
     private String obtenerCedula(Usuario u) {
         return (u.getMetodosPago() != null && !u.getMetodosPago().isEmpty()) ? u.getMetodosPago().get(0) : "";
     }
