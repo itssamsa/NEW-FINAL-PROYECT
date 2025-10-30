@@ -19,6 +19,7 @@ public class Envio {
     private LocalDateTime fechaEstimadaEntrega;
     private Usuario usuario;
     private Repartidor repartidor;
+    private double costoTotal;
     private List<ServicioAdicional> serviciosAdicionales = new ArrayList<>();
 
     public Envio(String idEnvio, Direccion origen, Direccion destino, double peso, double volumen,
@@ -31,6 +32,7 @@ public class Envio {
         this.usuario = usuario;
         this.estado = EstadoEnvio.SOLICITADO;
         this.fechaCreacion = LocalDateTime.now();
+        this.costoTotal = costoTotal;
     }
 
     public String getIdEnvio() { return idEnvio; }
@@ -50,6 +52,8 @@ public class Envio {
     public void setRepartidor(Repartidor repartidor) { this.repartidor = repartidor; }
     public List<ServicioAdicional> getServiciosAdicionales() { return serviciosAdicionales; }
     public void addServicioAdicional(ServicioAdicional s) { this.serviciosAdicionales.add(s); }
+    public double getCostoTotal() {return costoTotal;}
+    public void setCostoTotal(double costoTotal) {this.costoTotal = costoTotal;}
 
     @Override
     public String toString() {

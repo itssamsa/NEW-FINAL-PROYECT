@@ -10,16 +10,26 @@ public class EnvioService {
     private final Map<String, Envio> repo = new HashMap<>();
 
     public Envio crear(Envio e) {
-        repo.put(e.getIdEnvio(), e); return e;
+        repo.put(e.getIdEnvio(), e);
+        return e;
     }
 
-    public Optional<Envio> obtener(String id) { return Optional.ofNullable(repo.get(id)); }
+    public Optional<Envio> obtener(String id) {
+        return Optional.ofNullable(repo.get(id));
+    }
 
-    public List<Envio> listar() { return new ArrayList<>(repo.values()); }
+    public List<Envio> listar() {
+        return new ArrayList<>(repo.values());
+    }
 
-    public Envio actualizar(Envio e) { repo.put(e.getIdEnvio(), e); return e; }
+    public Envio actualizar(Envio e) {
+        repo.put(e.getIdEnvio(), e);
+        return e;
+    }
 
-    public boolean eliminar(String id) { return repo.remove(id) != null; }
+    public boolean eliminar(String id) {
+        return repo.remove(id) != null;
+    }
 
     public boolean asignarRepartidor(String envioId, Repartidor r) {
         Envio e = repo.get(envioId);
@@ -35,5 +45,12 @@ public class EnvioService {
         if (e == null) return false;
         e.setEstado(estado);
         return true;
+    }
+
+
+    public List<Envio> listarPorUsuario(String idUsuario) {
+        return repo.values().stream()
+                .filter(e -> e.getUsuario() != null && e.getUsuario().getIdUsuario().equals(idUsuario))
+                .toList();
     }
 }

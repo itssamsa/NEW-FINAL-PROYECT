@@ -19,6 +19,7 @@ public class EnvioDTO {
     private LocalDateTime fechaEstimadaEntrega;
     private String idUsuario;
     private String idRepartidor;
+    private double costoTotal;
     private List<ServicioAdicional> serviciosAdicionales;
 
     public EnvioDTO() {}
@@ -45,6 +46,8 @@ public class EnvioDTO {
     public void setIdUsuario(String idUsuario) { this.idUsuario = idUsuario; }
     public String getIdRepartidor() { return idRepartidor; }
     public void setIdRepartidor(String idRepartidor) { this.idRepartidor = idRepartidor; }
+    public double getCostoTotal() {return costoTotal;}
+    public void setCostoTotal(double costoTotal) {this.costoTotal = costoTotal;}
     public List<ServicioAdicional> getServiciosAdicionales() { return serviciosAdicionales; }
     public void setServiciosAdicionales(List<ServicioAdicional> serviciosAdicionales) { this.serviciosAdicionales = serviciosAdicionales; }
 }

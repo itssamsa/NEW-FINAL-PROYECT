@@ -67,20 +67,26 @@ public class UsuarioController {
             return;
         }
 
+        // 🔹 Usar la cédula o el ID ingresado en el TextField
+        String idUsuario = txtCedula.getText();
+
         Direccion dir = new Direccion("D-" + txtCedula.getText(), "Casa", txtDireccion.getText(), "Ciudad", "0,0");
 
         Usuario usuario = new UsuarioBuilder()
+                .withId(idUsuario)
                 .withNombreCompleto(txtNombre.getText())
                 .withCorreo(txtCorreo.getText())
                 .withTelefono(txtTelefono.getText())
                 .build();
+
         usuario.getMetodosPago().add(txtCedula.getText());
         usuario.getDireccionesFrecuentes().add(dir);
 
         usuarioService.crearUsuario(usuario);
         limpiarCampos();
         cargarUsuarios();
-        mostrarAlerta("Éxito", "Usuario registrado correctamente.");
+
+        mostrarAlerta("Éxito", "Usuario registrado correctamente con ID: " + idUsuario);
     }
 
     @FXML

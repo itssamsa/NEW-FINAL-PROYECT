@@ -6,7 +6,7 @@ import co.edu.uniquindio.proyectofinal.sameday.service.*;
 import java.util.UUID;
 
 public class ModelFactory {
-    private static ModelFactory instance;
+    private static final ModelFactory instance = new ModelFactory();
 
     private final UsuarioService usuarioService;
     private final RepartidorService repartidorService;
@@ -22,8 +22,8 @@ public class ModelFactory {
         pagoService = new PagoService();
     }
 
-    public static synchronized ModelFactory getInstance() {
-        if (instance == null) instance = new ModelFactory();
+
+    public static ModelFactory getInstance() {
         return instance;
     }
 
@@ -32,7 +32,6 @@ public class ModelFactory {
     public EnvioService getEnvioService() { return envioService; }
     public TarifaService getTarifaService() { return tarifaService; }
     public PagoService getPagoService() { return pagoService; }
-
 
     public Direccion crearDireccionSimple(String alias, String calle, String ciudad) {
         return new Direccion(UUID.randomUUID().toString(), alias, calle, ciudad, "0,0");

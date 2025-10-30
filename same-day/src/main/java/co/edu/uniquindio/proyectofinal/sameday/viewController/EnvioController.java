@@ -1,31 +1,25 @@
 package co.edu.uniquindio.proyectofinal.sameday.viewController;
 
-import co.edu.uniquindio.proyectofinal.sameday.model.*;
-import co.edu.uniquindio.proyectofinal.sameday.model.decorator.EnvioConEntregaNocturna;
-import co.edu.uniquindio.proyectofinal.sameday.model.decorator.EnvioConRastreoPremium;
-import co.edu.uniquindio.proyectofinal.sameday.model.decorator.EnvioConSeguro;
-import co.edu.uniquindio.proyectofinal.sameday.model.enums.*;
-import co.edu.uniquindio.proyectofinal.sameday.model.factoryMethod.FirmaRequeridaFactory;
-import co.edu.uniquindio.proyectofinal.sameday.model.factoryMethod.PrioridadFactory;
-import co.edu.uniquindio.proyectofinal.sameday.model.factoryMethod.ServicioAdicionalFactory;
-import co.edu.uniquindio.proyectofinal.sameday.model.strategy.*;
 import co.edu.uniquindio.proyectofinal.sameday.factory.ModelFactory;
+import co.edu.uniquindio.proyectofinal.sameday.model.*;
+import co.edu.uniquindio.proyectofinal.sameday.model.decorator.*;
+import co.edu.uniquindio.proyectofinal.sameday.model.enums.*;
+import co.edu.uniquindio.proyectofinal.sameday.model.factoryMethod.*;
+import co.edu.uniquindio.proyectofinal.sameday.model.strategy.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import java.time.LocalDate;
+
+import java.util.Optional;
+import java.util.Random;
 
 public class EnvioController {
 
-    @FXML private ComboBox<Direccion> cbOrigen;
-    @FXML private ComboBox<Direccion> cbDestino;
+    @FXML private TextField txtIdUsuario;
     @FXML private TextField txtPeso;
     @FXML private TextField txtVolumen;
-    @FXML private ComboBox<EstadoEnvio> cbEstado;
-    @FXML private DatePicker dpFechaEntrega;
-    @FXML private Label lblCostoTotal;
-    @FXML private Label lblDesglose;
     @FXML private ComboBox<String> cbEstrategia;
-
+    @FXML private Label lblCostoTotal;
+    @FXML private TextArea txtResumen;
 
     @FXML private CheckBox chkSeguro;
     @FXML private CheckBox chkPrioridad;
@@ -37,72 +31,74 @@ public class EnvioController {
 
     @FXML
     public void initialize() {
-        cbEstado.getItems().addAll(EstadoEnvio.values());
         cbEstrategia.getItems().addAll("Por peso", "Por distancia", "Por prioridad");
-
-
-        cbOrigen.getItems().addAll(
-                new Direccion("D1", "Casa", "Calle 1", "Ciudad A", "1,1"),
-                new Direccion("D2", "Oficina", "Calle 2", "Ciudad B", "2,2")
-        );
-        cbDestino.getItems().addAll(cbOrigen.getItems());
-
-        dpFechaEntrega.setValue(LocalDate.now().plusDays(3));
+        lblCostoTotal.setText("Costo total estimado: $");
+        txtResumen.setText("Resumen del envío:");
     }
-
 
     @FXML
     private void calcularTarifa() {
         try {
-            double peso = Double.parseDouble(txtPeso.getText());
-            double volumen = Double.parseDouble(txtVolumen.getText());
-
-            Usuario usuario = ModelFactory.getInstance()
-                    .getUsuarioService().listarTodos().stream().findFirst().orElse(null);
-
-            if (usuario == null) {
-                mostrarAlerta("Error", "No hay usuarios registrados. Cree un usuario primero.");
+            if (txtIdUsuario.getText().isEmpty()) {
+                mostrarAlerta("Error", "Debe ingresar el ID del usuario.");
                 return;
             }
 
-            envioActual = new Envio("E1", cbOrigen.getValue(), cbDestino.getValue(), peso, volumen, usuario);
+            // Buscar usuario registrado por ID
+            Optional<Usuario> usuarioOpt = ModelFactory.getInstance()
+                    .getUsuarioService().obtenerPorId(txtIdUsuario.getText());
+
+            if (usuarioOpt.isEmpty()) {
+                mostrarAlerta("Error", "No se encontró ningún usuario con ese ID registrado.");
+                return;
+            }
+
+            Usuario usuario = usuarioOpt.get();
+
+            // Direcciones predeterminadas (por ahora)
+            Direccion origen = new Direccion("D1", "Bodega Central", "Calle 10 #20-30", "Armenia", "0,0");
+            Direccion destino = new Direccion("D2", "Destino Cliente", "Carrera 15 #40-22", "Cali", "0,0");
+
+            double peso = Double.parseDouble(txtPeso.getText());
+            double volumen = Double.parseDouble(txtVolumen.getText());
+
+            // 🔹 Generar ID de envío corto (4 números)
+            String idEnvio = String.format("E-%04d", new Random().nextInt(10000));
+
+            envioActual = new Envio(idEnvio, origen, destino, peso, volumen, usuario);
 
             double costoAdicional = 0.0;
 
+            // 🔸 Decorators
             if (chkSeguro.isSelected()) {
                 envioActual = new EnvioConSeguro(envioActual);
                 costoAdicional += 10.0;
                 envioActual.addServicioAdicional(ServicioAdicional.SEGURO);
             }
-
             if (chkRastreo.isSelected()) {
                 envioActual = new EnvioConRastreoPremium(envioActual);
                 costoAdicional += 5.0;
                 envioActual.addServicioAdicional(ServicioAdicional.RASTREO_PREMIUM);
             }
-
             if (chkNocturna.isSelected()) {
                 envioActual = new EnvioConEntregaNocturna(envioActual);
                 costoAdicional += 8.0;
                 envioActual.addServicioAdicional(ServicioAdicional.ENTREGA_NOCTURNA);
             }
 
-
+            // 🔸 Factory
             if (chkPrioridad.isSelected()) {
                 ServicioAdicionalFactory prioridadFactory = new PrioridadFactory();
-                ServicioAdicional servicio = prioridadFactory.crearServicio();
-                envioActual.addServicioAdicional(servicio);
+                envioActual.addServicioAdicional(prioridadFactory.crearServicio());
                 costoAdicional += 7.0;
             }
-
             if (chkFirma.isSelected()) {
                 ServicioAdicionalFactory firmaFactory = new FirmaRequeridaFactory();
-                ServicioAdicional servicio = firmaFactory.crearServicio();
-                envioActual.addServicioAdicional(servicio);
+                envioActual.addServicioAdicional(firmaFactory.crearServicio());
                 costoAdicional += 4.0;
             }
 
-
+            // 🔸 Strategy
             EstrategiaTarifa estrategia;
             switch (cbEstrategia.getValue()) {
                 case "Por distancia" -> estrategia = new TarifaPorDistancia();
@@ -113,21 +109,28 @@ public class EnvioController {
             double costoBase = estrategia.calcularTarifa(envioActual);
             double costoFinal = costoBase + costoAdicional;
 
+            envioActual.setCostoTotal(costoFinal);
 
             lblCostoTotal.setText("Costo total estimado: $" + costoFinal);
-            lblDesglose.setText(
-                    "Estrategia aplicada: " + estrategia.descripcion() +
+            txtResumen.setText(
+                    "Usuario: " + usuario.getNombreCompleto() +
+                            "\nID Usuario: " + usuario.getIdUsuario() +
+                            "\nID Envío: " + idEnvio +
+                            "\nEstrategia: " + estrategia.descripcion() +
                             "\nCosto base: $" + costoBase +
                             "\nServicios adicionales: " + envioActual.getServiciosAdicionales() +
-                            "\nCosto adicional: $" + costoAdicional
+                            "\nCosto adicional: $" + costoAdicional +
+                            "\n----------------------------------" +
+                            "\nCosto total: $" + costoFinal
             );
 
+        } catch (NumberFormatException e) {
+            mostrarAlerta("Error", "El peso y volumen deben ser valores numéricos.");
         } catch (Exception e) {
-            mostrarAlerta("Error", "Datos inválidos o incompletos. Verifique los campos.");
+            mostrarAlerta("Error", "Ocurrió un problema al calcular la tarifa.");
             e.printStackTrace();
         }
     }
-
 
     @FXML
     private void confirmarEnvio() {
@@ -135,24 +138,30 @@ public class EnvioController {
             mostrarAlerta("Error", "Primero calcule la tarifa antes de confirmar.");
             return;
         }
-        mostrarAlerta("Confirmación", "El envío ha sido registrado correctamente.");
+
+        ModelFactory.getInstance().getEnvioService().crear(envioActual);
+
+        mostrarAlerta("Confirmación",
+                "✅ Envío registrado correctamente.\n" +
+                        "ID de Envío: " + envioActual.getIdEnvio() + "\n" +
+                        "Asociado al usuario: " + envioActual.getUsuario().getNombreCompleto() + ".");
+
+        limpiarCampos();
     }
 
     @FXML
     private void cancelarEnvio() {
-        mostrarAlerta("Cancelación", "El envío ha sido cancelado.");
         limpiarCampos();
+        mostrarAlerta("Cancelación", "El envío ha sido cancelado.");
     }
 
-
     private void limpiarCampos() {
+        txtIdUsuario.clear();
         txtPeso.clear();
         txtVolumen.clear();
-        cbOrigen.getSelectionModel().clearSelection();
-        cbDestino.getSelectionModel().clearSelection();
         cbEstrategia.getSelectionModel().clearSelection();
         lblCostoTotal.setText("Costo total estimado: $");
-        lblDesglose.setText("Desglose de tarifa:");
+        txtResumen.setText("Resumen del envío:");
         chkSeguro.setSelected(false);
         chkPrioridad.setSelected(false);
         chkFirma.setSelected(false);
@@ -160,10 +169,10 @@ public class EnvioController {
         chkNocturna.setSelected(false);
     }
 
-
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);
         alerta.setTitle(titulo);
+        alerta.setHeaderText(null);
         alerta.setContentText(mensaje);
         alerta.showAndWait();
     }

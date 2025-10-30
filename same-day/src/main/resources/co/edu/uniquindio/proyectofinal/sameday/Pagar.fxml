@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.PagarController"
+            prefWidth="400" prefHeight="350">
+
+    <VBox spacing="15" alignment="CENTER" AnchorPane.topAnchor="15" AnchorPane.leftAnchor="20">
+        <Label text="Pago del Envío" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+        <Label fx:id="lblIdEnvio" text="ID del Envío: "/>
+        <Label fx:id="lblTotal" text="Total a pagar: $0"/>
+
+        <Separator/>
+
+        <Label text="Método de pago:"/>
+        <ComboBox fx:id="cbMetodoPago" prefWidth="200"/>
+
+        <TextField fx:id="txtOrigen" promptText="Dirección de origen" prefWidth="250"/>
+        <TextField fx:id="txtDestino" promptText="Dirección de destino" prefWidth="250"/>
+
+        <HBox spacing="15" alignment="CENTER">
+            <Button text="Confirmar Pago" onAction="#confirmarPago"/>
+            <Button text="Cancelar" onAction="#cancelarPago"/>
+        </HBox>
+    </VBox>
+
+</AnchorPane>

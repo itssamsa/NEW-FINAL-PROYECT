@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.MiEnvioController"
+            prefWidth="600" prefHeight="500">
+
+    <VBox spacing="12" alignment="TOP_CENTER" prefWidth="580" AnchorPane.topAnchor="15" AnchorPane.leftAnchor="10">
+        <Label text="Buscar Envío" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+        <HBox spacing="10" alignment="CENTER">
+            <Label text="ID del Envío:"/>
+            <TextField fx:id="txtIdEnvio" promptText="Ej: 1234" prefWidth="120"/>
+            <Button text="Buscar" onAction="#buscarEnvio"/>
+        </HBox>
+
+        <Separator/>
+
+        <TextArea fx:id="txtInfoEnvio" prefWidth="500" prefHeight="180"
+                  editable="false" wrapText="true"
+                  text="Información del envío aparecerá aquí."/>
+
+        <HBox spacing="10" alignment="CENTER">
+            <Button text="Rastrear" prefWidth="110"/>
+            <Button text="Cancelar" prefWidth="110"/>
+            <Button text="Estado del Envío" prefWidth="130"/>
+            <Button text="Reportes" prefWidth="110"/>
+        </HBox>
+
+        <Separator/>
+
+        <Button text="💳 Pagar Envío" style="-fx-font-size: 16px; -fx-font-weight: bold;"
+                onAction="#abrirVentanaPago" prefWidth="200"/>
+
+    </VBox>
+
+</AnchorPane>

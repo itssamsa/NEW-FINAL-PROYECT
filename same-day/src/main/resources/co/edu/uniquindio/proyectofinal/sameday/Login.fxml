@@ -4,7 +4,10 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<TabPane prefHeight="629.0" prefWidth="854.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.LoginController">
+<TabPane prefHeight="629.0" prefWidth="854.0"
+         xmlns:fx="http://javafx.com/fxml/1"
+         xmlns="http://javafx.com/javafx/23.0.1"
+         fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.LoginController">
 
     <tabs>
         <Tab closable="false" text="Administrador">
@@ -27,6 +30,14 @@
             <content>
                 <AnchorPane>
                     <fx:include source="envio.fxml" />
+                </AnchorPane>
+            </content>
+        </Tab>
+
+        <Tab closable="false" text="Mi Envío">
+            <content>
+                <AnchorPane>
+                    <fx:include source="MiEnvio.fxml" />
                 </AnchorPane>
             </content>
         </Tab>

@@ -8,7 +8,7 @@ public class PagoService {
     private final Map<String, Pago> repo = new HashMap<>();
 
     public Pago registrar(Pago p) {
-        p.setResultado("Aprobado"); // simulación
+        p.setResultado("Aprobado");
         repo.put(p.getIdPago(), p);
         return p;
     }
