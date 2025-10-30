@@ -1,6 +1,8 @@
 package co.edu.uniquindio.proyectofinal.sameday.viewController;
 
+import co.edu.uniquindio.proyectofinal.sameday.factory.ModelFactory;
 import co.edu.uniquindio.proyectofinal.sameday.model.Envio;
+import co.edu.uniquindio.proyectofinal.sameday.model.enums.EstadoEnvio;
 import co.edu.uniquindio.proyectofinal.sameday.model.enums.MetodoPago;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -30,9 +32,22 @@ public class PagarController {
             return;
         }
 
+        // 🔸 Verificar si ya fue pagado
+        if (envio.isPagado()) {
+            mostrarAlerta("Advertencia", "Este envío ya fue pagado anteriormente.");
+            return;
+        }
+
+        // 🔹 Cambiar el estado del envío a SOLICITADO y marcar como pagado
+        envio.setEstado(EstadoEnvio.SOLICITADO);
+        envio.setPagado(true);
+        ModelFactory.getInstance().getEnvioService().actualizar(envio);
+
         mostrarAlerta("Pago Exitoso",
                 "El envío con ID " + envio.getIdEnvio() +
-                        " ha sido pagado exitosamente.\nMétodo: " + cbMetodoPago.getValue());
+                        " ha sido pagado exitosamente.\nMétodo: " + cbMetodoPago.getValue() +
+                        "\nNuevo estado: SOLICITADO.");
+
         cerrarVentana();
     }
 
@@ -54,3 +69,4 @@ public class PagarController {
         alerta.showAndWait();
     }
 }
+

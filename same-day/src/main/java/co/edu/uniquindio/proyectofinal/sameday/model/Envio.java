@@ -20,6 +20,7 @@ public class Envio {
     private Usuario usuario;
     private Repartidor repartidor;
     private double costoTotal;
+    private boolean pagado;
     private List<ServicioAdicional> serviciosAdicionales = new ArrayList<>();
 
     public Envio(String idEnvio, Direccion origen, Direccion destino, double peso, double volumen,
@@ -33,6 +34,7 @@ public class Envio {
         this.estado = EstadoEnvio.SOLICITADO;
         this.fechaCreacion = LocalDateTime.now();
         this.costoTotal = costoTotal;
+        this.pagado = false;
     }
 
     public String getIdEnvio() { return idEnvio; }
@@ -54,6 +56,9 @@ public class Envio {
     public void addServicioAdicional(ServicioAdicional s) { this.serviciosAdicionales.add(s); }
     public double getCostoTotal() {return costoTotal;}
     public void setCostoTotal(double costoTotal) {this.costoTotal = costoTotal;}
+    public boolean isPagado() { return pagado; }
+    public void setPagado(boolean pagado) { this.pagado = pagado; }
+
 
     @Override
     public String toString() {

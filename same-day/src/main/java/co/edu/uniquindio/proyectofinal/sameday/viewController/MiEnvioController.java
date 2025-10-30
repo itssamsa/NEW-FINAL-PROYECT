@@ -2,6 +2,7 @@ package co.edu.uniquindio.proyectofinal.sameday.viewController;
 
 import co.edu.uniquindio.proyectofinal.sameday.factory.ModelFactory;
 import co.edu.uniquindio.proyectofinal.sameday.model.Envio;
+import co.edu.uniquindio.proyectofinal.sameday.model.enums.EstadoEnvio;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -41,7 +42,9 @@ public class MiEnvioController {
                         "ID: " + envioActual.getIdEnvio() +
                         "\nUsuario: " + envioActual.getUsuario().getNombreCompleto() +
                         "\nServicios adicionales: " + envioActual.getServiciosAdicionales() +
-                        "\nCosto total: $" + envioActual.getCostoTotal()
+                        "\nCosto total: $" + envioActual.getCostoTotal() +
+                        "\nEstado actual: " + (envioActual.getEstado() != null ? envioActual.getEstado() : "Sin estado") +
+                        "\nPagado: " + (envioActual.isPagado() ? "Sí" : "No")
         );
     }
 
@@ -58,16 +61,38 @@ public class MiEnvioController {
             ventanaPago.setScene(new Scene(loader.load()));
             ventanaPago.setTitle("Pago del Envío");
 
-            // Pasar el envío al controlador de pago
             PagarController pagarController = loader.getController();
             pagarController.setEnvio(envioActual);
 
             ventanaPago.initModality(Modality.APPLICATION_MODAL);
             ventanaPago.showAndWait();
 
+            // 🔄 Refrescar info después del pago
+            buscarEnvio();
+
         } catch (IOException e) {
             e.printStackTrace();
             mostrarAlerta("Error", "No se pudo abrir la ventana de pago.");
+        }
+    }
+
+    @FXML
+    private void cancelarEnvio() {
+        if (envioActual == null) {
+            mostrarAlerta("Error", "Debe buscar un envío antes de cancelarlo.");
+            return;
+        }
+
+        EstadoEnvio estado = envioActual.getEstado();
+
+        if ((estado == null || estado == EstadoEnvio.SOLICITADO) && !envioActual.isPagado()) {
+            ModelFactory.getInstance().getEnvioService().eliminar(envioActual.getIdEnvio());
+            txtInfoEnvio.clear();
+            mostrarAlerta("Cancelado", "El envío fue cancelado correctamente.");
+        } else if (estado == EstadoEnvio.SOLICITADO && envioActual.isPagado()) {
+            mostrarAlerta("No permitido", "El envío ya fue pagado y no puede cancelarse.");
+        } else {
+            mostrarAlerta("No permitido", "El envío no puede cancelarse porque su estado es: " + estado);
         }
     }
 
