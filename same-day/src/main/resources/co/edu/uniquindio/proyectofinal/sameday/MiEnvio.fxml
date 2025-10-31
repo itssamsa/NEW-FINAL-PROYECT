@@ -28,7 +28,9 @@
             <Button text="Rastrear" prefWidth="110"/>
             <Button text="Cancelar" prefWidth="110" onAction="#cancelarEnvio"/>
             <Button text="Estado del Envío" prefWidth="130"/>
-            <Button text="Reportes" prefWidth="110"/>
+
+            <ComboBox fx:id="cbFormatoReporte" prefWidth="120" promptText="Formato"/>
+            <Button text="Reportes" prefWidth="110" onAction="#generarReporte"/>
         </HBox>
 
         <Separator/>

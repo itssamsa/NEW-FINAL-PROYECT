@@ -53,4 +53,14 @@ public class EnvioService {
                 .filter(e -> e.getUsuario() != null && e.getUsuario().getIdUsuario().equals(idUsuario))
                 .toList();
     }
+
+    public List<Envio> obtenerPorUsuario(String idUsuario) {
+        List<Envio> resultado = new ArrayList<>();
+        for (Envio e : repo.values()) {
+            if (e != null && e.getUsuario() != null && idUsuario.equals(e.getUsuario().getIdUsuario())) {
+                resultado.add(e);
+            }
+        }
+        return resultado;
+    }
 }
