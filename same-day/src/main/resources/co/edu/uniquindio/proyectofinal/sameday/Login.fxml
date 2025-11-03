@@ -18,6 +18,15 @@
             </content>
         </Tab>
 
+
+        <Tab closable="false" text="Repartidor">
+            <content>
+                <AnchorPane>
+                    <fx:include source="repartidor.fxml"/>
+                </AnchorPane>
+            </content>
+        </Tab>
+
         <Tab closable="false" text="Usuario">
             <content>
                 <AnchorPane>

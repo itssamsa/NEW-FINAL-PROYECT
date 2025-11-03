@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+
+<AnchorPane prefHeight="547.0" prefWidth="850" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.RepartidorController">
+
+    <Label layoutX="17.0" layoutY="14.0" style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Gestión de Repartidores" />
+
+
+    <Label layoutX="30" layoutY="70" text="ID:" />
+    <TextField fx:id="txtId" layoutX="130" layoutY="65" prefWidth="150" promptText="Ej: R001" />
+
+    <Label layoutX="30" layoutY="110" text="Nombre:" />
+    <TextField fx:id="txtNombre" layoutX="130" layoutY="105" prefWidth="150" />
+
+    <Label layoutX="380.0" layoutY="70.0" text="Documento:" />
+    <TextField fx:id="txtDocumento" layoutX="475.0" layoutY="67.0" prefWidth="150" />
+
+    <Label layoutX="380.0" layoutY="110.0" text="Teléfono:" />
+    <TextField fx:id="txtTelefono" layoutX="475.0" layoutY="106.0" prefWidth="150" />
+
+    <Label layoutX="30.0" layoutY="147.0" prefHeight="25.0" prefWidth="39.0" text="Zona:" />
+    <TextField fx:id="txtZona" layoutX="131.0" layoutY="147.0" prefWidth="150" />
+
+    <Label layoutX="380.0" layoutY="151.0" text="Estado:" />
+    <ComboBox fx:id="cbEstado" layoutX="475.0" layoutY="147.0" prefWidth="150" />
+
+
+    <HBox layoutX="312.0" layoutY="287.0" spacing="10" />
+
+
+    <TableView fx:id="tablaRepartidores" layoutX="30" layoutY="242.0" prefHeight="228.0" prefWidth="698.0">
+        <columns>
+            <TableColumn fx:id="colId" prefWidth="80" text="ID" />
+            <TableColumn fx:id="colNombre" prefWidth="130" text="Nombre" />
+            <TableColumn fx:id="colDocumento" prefWidth="120" text="Documento" />
+            <TableColumn fx:id="colTelefono" prefWidth="120" text="Teléfono" />
+            <TableColumn fx:id="colZona" prefWidth="120" text="Zona" />
+            <TableColumn fx:id="colEstado" prefWidth="123.0" text="Estado" />
+        </columns>
+    </TableView>
+
+
+    <Button layoutX="200.0" layoutY="493.0" onAction="#verEnviosAsignados" prefWidth="180" text="Ver Envíos Asignados" />
+
+    <Button layoutX="466.0" layoutY="493.0" onAction="#cambiarEstado" prefWidth="150" text="Cambiar Estado" />
+     <Button layoutX="466.0" layoutY="202.0" onAction="#eliminarRepartidor" text="Eliminar" />
+     <Button layoutX="155.0" layoutY="202.0" onAction="#crearRepartidor" text="Crear" />
+     <Button layoutX="246.0" layoutY="202.0" onAction="#actualizarRepartidor" text="Actualizar" />
+     <Button layoutX="372.0" layoutY="202.0" onAction="#limpiarCampos" text="Limpiar" />
+
+</AnchorPane>

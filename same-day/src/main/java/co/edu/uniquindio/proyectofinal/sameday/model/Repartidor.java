@@ -1,11 +1,14 @@
 package co.edu.uniquindio.proyectofinal.sameday.model;
 
 import co.edu.uniquindio.proyectofinal.sameday.model.enums.EstadoRepartidor;
+import co.edu.uniquindio.proyectofinal.sameday.model.observer.ObservadorRepartidor;
+import co.edu.uniquindio.proyectofinal.sameday.model.observer.SujetoRepartidor;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Repartidor {
+public class Repartidor implements SujetoRepartidor {
     private String idRepartidor;
     private String nombre;
     private String documento;
@@ -13,6 +16,7 @@ public class Repartidor {
     private EstadoRepartidor estado;
     private String zonaCobertura;
     private List<Envio> enviosAsignados = new ArrayList<>();
+    private final List<ObservadorRepartidor> observadores = new ArrayList<>();
 
     public Repartidor(String idRepartidor, String nombre, String documento, String telefono,
                       EstadoRepartidor estado, String zonaCobertura) {
@@ -24,17 +28,38 @@ public class Repartidor {
         this.zonaCobertura = zonaCobertura;
     }
 
+    public void setEstado(EstadoRepartidor nuevoEstado) {
+        this.estado = nuevoEstado;
+        notificarObservadores();
+    }
+
     public String getIdRepartidor() { return idRepartidor; }
     public String getNombre() { return nombre; }
     public String getDocumento() { return documento; }
     public String getTelefono() { return telefono; }
     public EstadoRepartidor getEstado() { return estado; }
-    public void setEstado(EstadoRepartidor estado) { this.estado = estado; }
     public String getZonaCobertura() { return zonaCobertura; }
     public List<Envio> getEnviosAsignados() { return enviosAsignados; }
 
     @Override
+    public void agregarObservador(ObservadorRepartidor observador) {
+        observadores.add(observador);
+    }
+
+    @Override
+    public void eliminarObservador(ObservadorRepartidor observador) {
+        observadores.remove(observador);
+    }
+
+    @Override
+    public void notificarObservadores() {
+        for (ObservadorRepartidor o : observadores) {
+            o.actualizarEstado(this);
+        }
+    }
+
+    @Override
     public String toString() {
-        return "Repartidor{" + idRepartidor + ", " + nombre + "}";
+        return "Repartidor{" + idRepartidor + ", " + nombre + ", estado=" + estado + "}";
     }
 }
