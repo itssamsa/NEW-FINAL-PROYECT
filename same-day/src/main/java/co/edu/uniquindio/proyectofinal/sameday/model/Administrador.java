@@ -4,9 +4,11 @@ import co.edu.uniquindio.proyectofinal.sameday.model.observer.ObservadorRepartid
 
 public class Administrador implements ObservadorRepartidor {
 
+    private String idAdministrador;
     private String nombre;
 
-    public Administrador(String nombre) {
+    public Administrador(String idAdministrador, String nombre) {
+        this.idAdministrador = idAdministrador;
         this.nombre = nombre;
     }
 
@@ -16,5 +18,9 @@ public class Administrador implements ObservadorRepartidor {
                 + "El repartidor " + repartidor.getNombre()
                 + " cambió su estado a " + repartidor.getEstado());
     }
+
+    public String getIdAdministrador() { return idAdministrador; }
+    public String getNombre() { return nombre; }
 }
+
 

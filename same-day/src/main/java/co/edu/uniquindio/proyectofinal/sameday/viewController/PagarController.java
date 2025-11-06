@@ -28,7 +28,6 @@ public class PagarController {
         lblTotal.setText("Total a pagar: $" + envio.getCostoTotal());
         cbMetodoPago.getItems().addAll(MetodoPago.values());
 
-        // 🔹 Mostrar la dirección del usuario registrado
         Usuario usuario = envio.getUsuario();
         if (usuario != null && usuario.getDireccionesFrecuentes() != null && !usuario.getDireccionesFrecuentes().isEmpty()) {
             Direccion direccion = usuario.getDireccionesFrecuentes().get(0);
@@ -55,7 +54,7 @@ public class PagarController {
         envio.setEstado(EstadoEnvio.SOLICITADO);
         envio.setPagado(true);
 
-        // ✅ Guardar direcciones introducidas o las del usuario
+
         Direccion origen = new Direccion("D-ORIGEN", "Origen", txtOrigen.getText(), "Ciudad registrada", "0,0");
         Direccion destino = new Direccion("D-DESTINO", "Destino", txtDestino.getText(), "Ciudad registrada", "0,0");
         envio.setOrigen(origen);
