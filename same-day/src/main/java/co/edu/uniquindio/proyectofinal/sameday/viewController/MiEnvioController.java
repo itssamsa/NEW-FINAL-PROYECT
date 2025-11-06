@@ -2,6 +2,7 @@ package co.edu.uniquindio.proyectofinal.sameday.viewController;
 
 import co.edu.uniquindio.proyectofinal.sameday.factory.ModelFactory;
 import co.edu.uniquindio.proyectofinal.sameday.model.Envio;
+import co.edu.uniquindio.proyectofinal.sameday.model.Pago;
 import co.edu.uniquindio.proyectofinal.sameday.model.adapter.*;
 import co.edu.uniquindio.proyectofinal.sameday.model.enums.EstadoEnvio;
 import javafx.fxml.FXML;
@@ -12,6 +13,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -104,6 +106,51 @@ public class MiEnvioController {
         } else {
             mostrarAlerta("No permitido",
                     "El envío no puede ser cancelado porque su estado actual es: " + estado);
+        }
+    }
+
+    // 🔹 Nuevo: mostrar comprobante de pago (RF-034)
+    @FXML
+    private void mostrarComprobantePago() {
+        if (envioActual == null) {
+            mostrarAlerta("Error", "Debe buscar un envío primero.");
+            return;
+        }
+
+        Optional<Pago> pagoOpt = ModelFactory.getInstance().getPagoService().listar().stream()
+                .filter(p -> p.getEnvio().getIdEnvio().equals(envioActual.getIdEnvio()))
+                .findFirst();
+
+        if (pagoOpt.isEmpty()) {
+            mostrarAlerta("Sin pago", "Este envío aún no tiene un comprobante de pago registrado.");
+            return;
+        }
+
+        Pago pago = pagoOpt.get();
+        String fecha = pago.getFecha().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+
+        mostrarAlerta("Comprobante de Pago",
+                "💳 ID Pago: " + pago.getIdPago() +
+                        "\n📦 ID Envío: " + envioActual.getIdEnvio() +
+                        "\nMétodo: " + pago.getMetodoPago() +
+                        "\nMonto: $" + pago.getMonto() +
+                        "\nResultado: " + pago.getResultado() +
+                        "\nFecha: " + fecha);
+    }
+
+    // 🔸 Nuevo: abrir ventana para listar pagos por rango (RF-035)
+    @FXML
+    private void abrirVentanaListarPagos() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/co/edu/uniquindio/proyectofinal/sameday/ListarPagos.fxml"));
+            Stage ventana = new Stage();
+            ventana.setScene(new Scene(loader.load()));
+            ventana.setTitle("Listado de Pagos");
+            ventana.initModality(Modality.APPLICATION_MODAL);
+            ventana.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarAlerta("Error", "No se pudo abrir la ventana de listado de pagos.");
         }
     }
 
