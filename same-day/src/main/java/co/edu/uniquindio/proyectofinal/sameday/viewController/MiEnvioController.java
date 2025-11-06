@@ -109,7 +109,6 @@ public class MiEnvioController {
         }
     }
 
-    // 🔹 Nuevo: mostrar comprobante de pago (RF-034)
     @FXML
     private void mostrarComprobantePago() {
         if (envioActual == null) {
@@ -138,7 +137,6 @@ public class MiEnvioController {
                         "\nFecha: " + fecha);
     }
 
-    // 🔸 Nuevo: abrir ventana para listar pagos por rango (RF-035)
     @FXML
     private void abrirVentanaListarPagos() {
         try {
@@ -151,6 +149,22 @@ public class MiEnvioController {
         } catch (IOException e) {
             e.printStackTrace();
             mostrarAlerta("Error", "No se pudo abrir la ventana de listado de pagos.");
+        }
+    }
+
+    // 🟢 NUEVO: Listar envíos filtrando por fecha o estado
+    @FXML
+    private void abrirVentanaListarEnvios() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/co/edu/uniquindio/proyectofinal/sameday/ListarEnvios.fxml"));
+            Stage ventana = new Stage();
+            ventana.setScene(new Scene(loader.load()));
+            ventana.setTitle("Listado de Envíos");
+            ventana.initModality(Modality.APPLICATION_MODAL);
+            ventana.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarAlerta("Error", "No se pudo abrir la ventana de listado de envíos.");
         }
     }
 
@@ -200,3 +214,4 @@ public class MiEnvioController {
         alerta.showAndWait();
     }
 }
+

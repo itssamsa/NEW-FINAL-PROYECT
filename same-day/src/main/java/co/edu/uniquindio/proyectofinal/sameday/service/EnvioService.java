@@ -5,6 +5,7 @@ import co.edu.uniquindio.proyectofinal.sameday.model.Repartidor;
 import co.edu.uniquindio.proyectofinal.sameday.model.enums.EstadoEnvio;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class EnvioService {
     private final Map<String, Envio> repo = new HashMap<>();
@@ -47,7 +48,6 @@ public class EnvioService {
         return true;
     }
 
-
     public List<Envio> listarPorUsuario(String idUsuario) {
         return repo.values().stream()
                 .filter(e -> e.getUsuario() != null && e.getUsuario().getIdUsuario().equals(idUsuario))
@@ -63,4 +63,17 @@ public class EnvioService {
         }
         return resultado;
     }
+
+    public List<Envio> listarPorFecha() {
+        return repo.values().stream()
+                .sorted(Comparator.comparing(Envio::getFechaCreacion).reversed())
+                .collect(Collectors.toList());
+    }
+
+    public List<Envio> listarPorEstado(EstadoEnvio estado) {
+        return repo.values().stream()
+                .filter(e -> e.getEstado() == estado)
+                .collect(Collectors.toList());
+    }
 }
+

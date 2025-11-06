@@ -5,7 +5,7 @@
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.MiEnvioController"
-            prefWidth="600" prefHeight="520">
+            prefWidth="600" prefHeight="550">
 
     <VBox spacing="12" alignment="TOP_CENTER" prefWidth="580"
           AnchorPane.topAnchor="15" AnchorPane.leftAnchor="10">
@@ -29,6 +29,7 @@
             <Button text="Cancelar" prefWidth="110" onAction="#cancelarEnvio"/>
             <Button text="🧾 Comprobante" prefWidth="130" onAction="#mostrarComprobantePago"/>
             <Button text="📅 Listar Pagos" prefWidth="130" onAction="#abrirVentanaListarPagos"/>
+            <Button text="📦 Listar Envíos" prefWidth="130" onAction="#abrirVentanaListarEnvios"/>
         </HBox>
 
         <Separator/>
