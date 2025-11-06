@@ -67,7 +67,6 @@ public class UsuarioController {
             return;
         }
 
-        // 🔹 Usar la cédula o el ID ingresado en el TextField
         String idUsuario = txtCedula.getText();
 
         Direccion dir = new Direccion("D-" + txtCedula.getText(), "Casa", txtDireccion.getText(), "Ciudad", "0,0");

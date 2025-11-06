@@ -33,7 +33,4 @@ public class ModelFactory {
     public TarifaService getTarifaService() { return tarifaService; }
     public PagoService getPagoService() { return pagoService; }
 
-    public Direccion crearDireccionSimple(String alias, String calle, String ciudad) {
-        return new Direccion(UUID.randomUUID().toString(), alias, calle, ciudad, "0,0");
-    }
 }
