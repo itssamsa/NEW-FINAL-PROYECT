@@ -35,6 +35,14 @@
             </content>
         </Tab>
 
+        <Tab closable="false" text="MisDirecciones">
+            <content>
+                <AnchorPane>
+                    <fx:include source="MisDirecciones.fxml" />
+                </AnchorPane>
+            </content>
+        </Tab>
+
         <Tab closable="false" text="Envío">
             <content>
                 <AnchorPane>

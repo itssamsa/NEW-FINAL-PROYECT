@@ -43,6 +43,9 @@ public class UsuarioController {
                 txtTelefono.setText(newVal.getTelefono());
                 txtCedula.setText(obtenerCedula(newVal));
                 txtDireccion.setText(obtenerDireccion(newVal));
+
+                // 👇 Se establece el usuario actual en la fábrica
+                ModelFactory.getInstance().setUsuarioActual(newVal);
             }
         });
     }
@@ -82,6 +85,10 @@ public class UsuarioController {
         usuario.getDireccionesFrecuentes().add(dir);
 
         usuarioService.crearUsuario(usuario);
+
+        // 👇 Guarda el usuario recién registrado como actual
+        ModelFactory.getInstance().setUsuarioActual(usuario);
+
         limpiarCampos();
         cargarUsuarios();
 
@@ -110,10 +117,9 @@ public class UsuarioController {
                 .add(new Direccion("D-" + txtCedula.getText(), "Casa", txtDireccion.getText(), "Ciudad", "0,0"));
 
         usuarioService.actualizarUsuario(usuarioSeleccionado);
-
+        ModelFactory.getInstance().setUsuarioActual(usuarioSeleccionado); // 👈 actualiza el usuario actual
 
         tablaUsuarios.refresh();
-
         limpiarCampos();
         mostrarAlerta("Éxito", "Usuario actualizado correctamente.");
     }
@@ -126,6 +132,12 @@ public class UsuarioController {
         }
 
         usuarioService.eliminarUsuario(usuarioSeleccionado.getIdUsuario());
+
+        // 👇 Si eliminó el usuario actual, se limpia
+        if (ModelFactory.getInstance().getUsuarioActual() == usuarioSeleccionado) {
+            ModelFactory.getInstance().setUsuarioActual(null);
+        }
+
         usuarioSeleccionado = null;
         cargarUsuarios();
         limpiarCampos();

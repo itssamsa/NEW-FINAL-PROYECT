@@ -5,9 +5,9 @@
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.PagarController"
-            prefWidth="420" prefHeight="400">
+            prefWidth="420" prefHeight="440">
 
-    <VBox spacing="15" alignment="CENTER" AnchorPane.topAnchor="15" AnchorPane.leftAnchor="20">
+    <VBox spacing="15" alignment="CENTER" AnchorPane.topAnchor="15" AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
         <Label text="💳 Pago del Envío" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
 
         <Label fx:id="lblIdEnvio" text="ID del Envío: "/>
@@ -19,8 +19,13 @@
         <Label text="Método de pago:"/>
         <ComboBox fx:id="cbMetodoPago" prefWidth="220"/>
 
-        <TextField fx:id="txtOrigen" promptText="Dirección de origen" prefWidth="250"/>
-        <TextField fx:id="txtDestino" promptText="Dirección de destino" prefWidth="250"/>
+        <Separator/>
+
+        <Label text="Dirección de entrega:"/>
+        <ComboBox fx:id="cbDirecciones" prefWidth="300" promptText="Seleccione su dirección guardada"/>
+
+        <TextField fx:id="txtOrigen" promptText="Dirección de origen (opcional)" prefWidth="300"/>
+        <TextField fx:id="txtDestino" promptText="Dirección de destino" prefWidth="300"/>
 
         <HBox spacing="15" alignment="CENTER">
             <Button text="Confirmar Pago" onAction="#confirmarPago"/>

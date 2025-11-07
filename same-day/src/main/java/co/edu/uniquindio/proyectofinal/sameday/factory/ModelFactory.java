@@ -1,11 +1,10 @@
 package co.edu.uniquindio.proyectofinal.sameday.factory;
 
-import co.edu.uniquindio.proyectofinal.sameday.model.Direccion;
+import co.edu.uniquindio.proyectofinal.sameday.model.Usuario;
 import co.edu.uniquindio.proyectofinal.sameday.service.*;
 
-import java.util.UUID;
-
 public class ModelFactory {
+
     private static final ModelFactory instance = new ModelFactory();
 
     private final UsuarioService usuarioService;
@@ -13,6 +12,7 @@ public class ModelFactory {
     private final EnvioService envioService;
     private final TarifaService tarifaService;
     private final PagoService pagoService;
+    private Usuario usuarioActual;
 
     private ModelFactory() {
         usuarioService = new UsuarioService();
@@ -21,7 +21,6 @@ public class ModelFactory {
         tarifaService = new TarifaService();
         pagoService = new PagoService();
     }
-
 
     public static ModelFactory getInstance() {
         return instance;
@@ -32,5 +31,20 @@ public class ModelFactory {
     public EnvioService getEnvioService() { return envioService; }
     public TarifaService getTarifaService() { return tarifaService; }
     public PagoService getPagoService() { return pagoService; }
+
+
+    public Usuario getUsuarioActual() {
+        return usuarioActual;
+    }
+
+    public void setUsuarioActual(Usuario usuarioActual) {
+        this.usuarioActual = usuarioActual;
+    }
+
+    public Usuario buscarUsuarioPorId(String idUsuario) {
+        return getUsuarioService()
+                .obtenerPorId(idUsuario)
+                .orElse(null);
+    }
 
 }

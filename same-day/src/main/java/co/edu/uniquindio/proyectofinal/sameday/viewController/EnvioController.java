@@ -62,14 +62,13 @@ public class EnvioController {
             double peso = Double.parseDouble(txtPeso.getText());
             double volumen = Double.parseDouble(txtVolumen.getText());
 
-            // 🔹 Generar ID de envío corto (4 números)
             String idEnvio = String.format("E-%04d", new Random().nextInt(10000));
 
             envioActual = new Envio(idEnvio, origen, destino, peso, volumen, usuario);
 
             double costoAdicional = 0.0;
 
-            // 🔸 Decorators
+            //decarotor
             if (chkSeguro.isSelected()) {
                 envioActual = new EnvioConSeguro(envioActual);
                 costoAdicional += 10.0;
@@ -86,7 +85,7 @@ public class EnvioController {
                 envioActual.addServicioAdicional(ServicioAdicional.ENTREGA_NOCTURNA);
             }
 
-            // 🔸 Factory
+            // factory
             if (chkPrioridad.isSelected()) {
                 ServicioAdicionalFactory prioridadFactory = new PrioridadFactory();
                 envioActual.addServicioAdicional(prioridadFactory.crearServicio());
@@ -98,7 +97,7 @@ public class EnvioController {
                 costoAdicional += 4.0;
             }
 
-            // 🔸 Strategy
+            // strategy
             EstrategiaTarifa estrategia;
             switch (cbEstrategia.getValue()) {
                 case "Por distancia" -> estrategia = new TarifaPorDistancia();

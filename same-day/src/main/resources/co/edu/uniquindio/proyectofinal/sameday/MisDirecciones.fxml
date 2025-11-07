@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.MisDireccionesController"
+            prefWidth="700" prefHeight="500">
+
+    <center>
+        <VBox spacing="10" alignment="CENTER">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+
+            <Label text="Mis Direcciones" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+            <!-- Campo para ingresar ID de usuario y botón de búsqueda -->
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="ID Usuario:"/>
+                <TextField fx:id="txtIdUsuario" prefWidth="150"/>
+                <Button text="Buscar" onAction="#buscarUsuarioPorId"/>
+            </HBox>
+
+            <!-- Tabla de direcciones -->
+            <TableView fx:id="tablaDirecciones" prefHeight="250" prefWidth="650">
+                <columns>
+                    <TableColumn fx:id="colAlias" text="Alias" prefWidth="120"/>
+                    <TableColumn fx:id="colCalle" text="Calle" prefWidth="200"/>
+                    <TableColumn fx:id="colCiudad" text="Ciudad" prefWidth="150"/>
+                    <TableColumn fx:id="colCoordenadas" text="Coordenadas" prefWidth="150"/>
+                </columns>
+            </TableView>
+
+            <!-- Campos de entrada -->
+            <GridPane hgap="10" vgap="10">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+
+                <Label text="Alias:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtAlias" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <Label text="Calle:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtCalle" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <Label text="Ciudad:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtCiudad" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                <Label text="Coordenadas:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtCoordenadas" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+            </GridPane>
+
+            <!-- Botones de acción -->
+            <HBox spacing="15" alignment="CENTER">
+                <Button text="Agregar" fx:id="btnAgregar" onAction="#agregarDireccion"/>
+                <Button text="Actualizar" fx:id="btnActualizar" onAction="#actualizarDireccion"/>
+                <Button text="Eliminar" fx:id="btnEliminar" onAction="#eliminarDireccion"/>
+                <Button text="Limpiar" fx:id="btnLimpiar" onAction="#limpiarCampos"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

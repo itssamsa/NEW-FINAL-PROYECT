@@ -77,8 +77,6 @@ public class MiEnvioController {
 
             ventanaPago.initModality(Modality.APPLICATION_MODAL);
             ventanaPago.showAndWait();
-
-            // 🔄 Refrescar info después del pago
             buscarEnvio();
 
         } catch (IOException e) {
@@ -152,7 +150,6 @@ public class MiEnvioController {
         }
     }
 
-    // 🟢 NUEVO: Listar envíos filtrando por fecha o estado
     @FXML
     private void abrirVentanaListarEnvios() {
         try {
