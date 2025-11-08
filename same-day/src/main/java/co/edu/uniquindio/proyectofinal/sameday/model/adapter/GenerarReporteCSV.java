@@ -12,3 +12,4 @@ public class GenerarReporteCSV implements GenerarReporte {
                 System.out.println(" - Envío ID: " + envio.getIdEnvio() + " | Usuario: " + envio.getUsuario().getNombreCompleto()));
     }
 }
+

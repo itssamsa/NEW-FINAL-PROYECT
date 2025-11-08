@@ -1,91 +1,261 @@
 package co.edu.uniquindio.proyectofinal.sameday.viewController;
 
 import co.edu.uniquindio.proyectofinal.sameday.model.facade.AdminFacade;
-import co.edu.uniquindio.proyectofinal.sameday.model.Envio;
 import co.edu.uniquindio.proyectofinal.sameday.model.Repartidor;
+import co.edu.uniquindio.proyectofinal.sameday.model.Usuario;
+import co.edu.uniquindio.proyectofinal.sameday.model.enums.EstadoRepartidor;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.chart.PieChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
-import java.util.List;
-
 public class AdminController {
 
+    // --- Facade ---
     private final AdminFacade adminFacade = new AdminFacade();
 
-    // --- COMPONENTES DE LA VISTA ---
-    @FXML private TableView<Repartidor> tablaRepartidores;
-    @FXML private TableView<Envio> tablaEnvios;
-    @FXML private PieChart chartEnvios;
-    @FXML private Label lblTotalEntregados;
-    @FXML private Label lblTotalEnRuta;
-
+    // --- Paneles ---
+    @FXML private VBox panelUsuarios;
     @FXML private VBox panelRepartidores;
-    @FXML private VBox panelEnvios;
-    @FXML private VBox panelMetricas;
 
-    // ---------- BOTONES ----------
+    // --- Campos Usuarios ---
+    @FXML private TextField txtNombre;
+    @FXML private TextField txtCorreo;
+    @FXML private TextField txtTelefono;
+    @FXML private TextField txtCedula;
+    @FXML private TextField txtDireccion;
+    @FXML private TableView<Usuario> tablaUsuarios;
+    @FXML private TableColumn<Usuario, String> colNombre;
+    @FXML private TableColumn<Usuario, String> colCorreo;
+    @FXML private TableColumn<Usuario, String> colTelefono;
+    @FXML private TableColumn<Usuario, String> colCedula;
+    @FXML private TableColumn<Usuario, String> colDireccion;
+
+    private ObservableList<Usuario> listaUsuarios;
+    private Usuario usuarioSeleccionado;
+
+    // --- Campos Repartidores ---
+    @FXML private TextField txtId;
+    @FXML private TextField txtNombreR;
+    @FXML private TextField txtDocumento;
+    @FXML private TextField txtTelefonoR;
+    @FXML private TextField txtZona;
+    @FXML private ComboBox<EstadoRepartidor> cbEstado;
+    @FXML private TableView<Repartidor> tablaRepartidores;
+    @FXML private TableColumn<Repartidor, String> colId;
+    @FXML private TableColumn<Repartidor, String> colNombreRR;
+    @FXML private TableColumn<Repartidor, String> colDocumentoR;
+    @FXML private TableColumn<Repartidor, String> colTelefonoRR;
+    @FXML private TableColumn<Repartidor, String> colZonaR;
+    @FXML private TableColumn<Repartidor, String> colEstadoR;
+
+    private ObservableList<Repartidor> listaRepartidores;
+    private Repartidor repartidorSeleccionado;
+
+    // --- Inicialización ---
     @FXML
-    public void handleVerRepartidores() {
-        mostrarPanel(panelRepartidores);
+    public void initialize() {
+        cbEstado.getItems().addAll(EstadoRepartidor.values());
+
+        configurarTablaUsuarios();
+        cargarUsuarios();
+
+        configurarTablaRepartidores();
         cargarRepartidores();
+
+        // Selección tabla usuarios
+        tablaUsuarios.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            usuarioSeleccionado = newVal;
+            if (newVal != null) {
+                txtNombre.setText(newVal.getNombreCompleto());
+                txtCorreo.setText(newVal.getCorreo());
+                txtTelefono.setText(newVal.getTelefono());
+                txtCedula.setText(obtenerCedula(newVal));
+                txtDireccion.setText(obtenerDireccion(newVal));
+            }
+        });
+
+        // Selección tabla repartidores
+        tablaRepartidores.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            repartidorSeleccionado = newVal;
+            if (newVal != null) {
+                txtId.setText(newVal.getIdRepartidor());
+                txtNombreR.setText(newVal.getNombre());
+                txtDocumento.setText(newVal.getDocumento());
+                txtTelefonoR.setText(newVal.getTelefono());
+                txtZona.setText(newVal.getZonaCobertura());
+                cbEstado.setValue(newVal.getEstado());
+            }
+        });
     }
 
+    // --- Métodos para alternar paneles ---
     @FXML
-    public void handleVerEnvios() {
-        mostrarPanel(panelEnvios);
-        cargarEnvios();
-    }
-
-    @FXML
-    public void handleVerMetricas() {
-        mostrarPanel(panelMetricas);
-        cargarMetricas();
-    }
-
-    @FXML
-    public void handleCerrarSesion() {
-        mostrarInfo("Sesión cerrada", "Has cerrado sesión correctamente.");
-    }
-
-    // ---------- MÉTODOS INTERNOS ----------
-    private void mostrarPanel(VBox panel) {
+    private void mostrarUsuarios() {
+        panelUsuarios.setVisible(true);
         panelRepartidores.setVisible(false);
-        panelEnvios.setVisible(false);
-        panelMetricas.setVisible(false);
-        panel.setVisible(true);
+    }
+
+    @FXML
+    private void mostrarRepartidores() {
+        panelUsuarios.setVisible(false);
+        panelRepartidores.setVisible(true);
+    }
+
+    // --- CRUD Usuarios ---
+    @FXML
+    private void registrarUsuario() {
+        if (camposVaciosUsuario()) {
+            mostrarAlerta("Error", "Todos los campos son obligatorios.");
+            return;
+        }
+        adminFacade.crearUsuario(txtNombre.getText(), txtCorreo.getText(), txtTelefono.getText(),
+                txtCedula.getText(), txtDireccion.getText());
+        limpiarCamposUsuario();
+        cargarUsuarios();
+        mostrarAlerta("Éxito", "Usuario registrado correctamente.");
+    }
+
+    @FXML
+    private void actualizarUsuario() {
+        if (usuarioSeleccionado == null) {
+            mostrarAlerta("Advertencia", "Seleccione un usuario.");
+            return;
+        }
+        adminFacade.actualizarUsuario(usuarioSeleccionado, txtNombre.getText(), txtCorreo.getText(),
+                txtTelefono.getText(), txtCedula.getText(), txtDireccion.getText());
+        tablaUsuarios.refresh();
+        limpiarCamposUsuario();
+        mostrarAlerta("Éxito", "Usuario actualizado correctamente.");
+    }
+
+    @FXML
+    private void eliminarUsuario() {
+        if (usuarioSeleccionado == null) {
+            mostrarAlerta("Advertencia", "Seleccione un usuario.");
+            return;
+        }
+        adminFacade.eliminarUsuario(usuarioSeleccionado.getIdUsuario());
+        usuarioSeleccionado = null;
+        cargarUsuarios();
+        limpiarCamposUsuario();
+        mostrarAlerta("Éxito", "Usuario eliminado correctamente.");
+    }
+
+    private void configurarTablaUsuarios() {
+        colNombre.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getNombreCompleto()));
+        colCorreo.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getCorreo()));
+        colTelefono.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getTelefono()));
+        colCedula.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(obtenerCedula(data.getValue())));
+        colDireccion.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(obtenerDireccion(data.getValue())));
+    }
+
+    private void cargarUsuarios() {
+        listaUsuarios = FXCollections.observableArrayList(adminFacade.listarUsuarios());
+        tablaUsuarios.setItems(listaUsuarios);
+    }
+
+    private boolean camposVaciosUsuario() {
+        return txtNombre.getText().isEmpty() || txtCorreo.getText().isEmpty()
+                || txtTelefono.getText().isEmpty() || txtCedula.getText().isEmpty()
+                || txtDireccion.getText().isEmpty();
+    }
+
+    private void limpiarCamposUsuario() {
+        txtNombre.clear();
+        txtCorreo.clear();
+        txtTelefono.clear();
+        txtCedula.clear();
+        txtDireccion.clear();
+        tablaUsuarios.getSelectionModel().clearSelection();
+        usuarioSeleccionado = null;
+    }
+
+    private String obtenerCedula(Usuario u) {
+        return (u.getMetodosPago() != null && !u.getMetodosPago().isEmpty()) ? u.getMetodosPago().get(0) : "";
+    }
+
+    private String obtenerDireccion(Usuario u) {
+        return (u.getDireccionesFrecuentes() != null && !u.getDireccionesFrecuentes().isEmpty())
+                ? u.getDireccionesFrecuentes().get(0).getCalle() : "";
+    }
+
+    // --- CRUD Repartidores ---
+    @FXML
+    private void registrarRepartidor() {
+        if (camposVaciosRepartidor()) {
+            mostrarAlerta("Error", "Todos los campos son obligatorios.");
+            return;
+        }
+        adminFacade.crearRepartidor(txtId.getText(), txtNombreR.getText(), txtDocumento.getText(),
+                txtTelefonoR.getText(), cbEstado.getValue(), txtZona.getText());
+        limpiarCamposRepartidor();
+        cargarRepartidores();
+        mostrarAlerta("Éxito", "Repartidor registrado correctamente.");
+    }
+
+    @FXML
+    private void actualizarRepartidor() {
+        if (repartidorSeleccionado == null) {
+            mostrarAlerta("Advertencia", "Seleccione un repartidor.");
+            return;
+        }
+        adminFacade.actualizarRepartidor(repartidorSeleccionado, txtNombreR.getText(), txtDocumento.getText(),
+                txtTelefonoR.getText(), cbEstado.getValue(), txtZona.getText());
+        tablaRepartidores.refresh();
+        limpiarCamposRepartidor();
+        mostrarAlerta("Éxito", "Repartidor actualizado correctamente.");
+    }
+
+    @FXML
+    private void eliminarRepartidor() {
+        if (repartidorSeleccionado == null) {
+            mostrarAlerta("Advertencia", "Seleccione un repartidor.");
+            return;
+        }
+        adminFacade.eliminarRepartidor(repartidorSeleccionado.getIdRepartidor());
+        repartidorSeleccionado = null;
+        cargarRepartidores();
+        limpiarCamposRepartidor();
+        mostrarAlerta("Éxito", "Repartidor eliminado correctamente.");
+    }
+
+    private void configurarTablaRepartidores() {
+        colId.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getIdRepartidor()));
+        colNombreRR.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getNombre()));
+        colDocumentoR.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getDocumento()));
+        colTelefonoRR.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getTelefono()));
+        colZonaR.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getZonaCobertura()));
+        colEstadoR.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(
+                data.getValue().getEstado() != null ? data.getValue().getEstado().name() : "N/A"
+        ));
     }
 
     private void cargarRepartidores() {
-        List<Repartidor> lista = adminFacade.listarRepartidores();
-        ObservableList<Repartidor> datos = FXCollections.observableArrayList(lista);
-        tablaRepartidores.setItems(datos);
+        listaRepartidores = FXCollections.observableArrayList(adminFacade.listarRepartidores());
+        tablaRepartidores.setItems(listaRepartidores);
     }
 
-    private void cargarEnvios() {
-        List<Envio> lista = adminFacade.listarEnvios();
-        ObservableList<Envio> datos = FXCollections.observableArrayList(lista);
-        tablaEnvios.setItems(datos);
+    private boolean camposVaciosRepartidor() {
+        return txtId.getText().isEmpty() || txtNombreR.getText().isEmpty()
+                || txtDocumento.getText().isEmpty() || txtTelefonoR.getText().isEmpty()
+                || txtZona.getText().isEmpty() || cbEstado.getValue() == null;
     }
 
-    private void cargarMetricas() {
-        long entregados = adminFacade.contarEnviosEntregados();
-        long enRuta = adminFacade.contarEnviosEnRuta();
-
-        lblTotalEntregados.setText("Entregados: " + entregados);
-        lblTotalEnRuta.setText("En ruta: " + enRuta);
-
-        ObservableList<PieChart.Data> datos = FXCollections.observableArrayList(
-                new PieChart.Data("Entregados", entregados),
-                new PieChart.Data("En Ruta", enRuta)
-        );
-        chartEnvios.setData(datos);
+    private void limpiarCamposRepartidor() {
+        txtId.clear();
+        txtNombreR.clear();
+        txtDocumento.clear();
+        txtTelefonoR.clear();
+        txtZona.clear();
+        cbEstado.getSelectionModel().clearSelection();
+        tablaRepartidores.getSelectionModel().clearSelection();
+        repartidorSeleccionado = null;
     }
 
-    private void mostrarInfo(String titulo, String mensaje) {
+    // --- Alerta ---
+    private void mostrarAlerta(String titulo, String mensaje) {
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);
         alerta.setTitle(titulo);
         alerta.setHeaderText(null);

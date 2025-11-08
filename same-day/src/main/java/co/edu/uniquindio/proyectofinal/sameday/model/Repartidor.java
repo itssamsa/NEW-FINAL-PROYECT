@@ -41,6 +41,30 @@ public class Repartidor implements SujetoRepartidor {
     public String getZonaCobertura() { return zonaCobertura; }
     public List<Envio> getEnviosAsignados() { return enviosAsignados; }
 
+    public void setIdRepartidor(String idRepartidor) {
+        this.idRepartidor = idRepartidor;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setDocumento(String documento) {
+        this.documento = documento;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public void setZonaCobertura(String zonaCobertura) {
+        this.zonaCobertura = zonaCobertura;
+    }
+
+    public void setEnviosAsignados(List<Envio> enviosAsignados) {
+        this.enviosAsignados = enviosAsignados;
+    }
+
     @Override
     public void agregarObservador(ObservadorRepartidor observador) {
         observadores.add(observador);
@@ -62,4 +86,6 @@ public class Repartidor implements SujetoRepartidor {
     public String toString() {
         return "Repartidor{" + idRepartidor + ", " + nombre + ", estado=" + estado + "}";
     }
+
+
 }

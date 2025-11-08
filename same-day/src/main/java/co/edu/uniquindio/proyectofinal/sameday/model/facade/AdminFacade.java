@@ -1,73 +1,80 @@
 package co.edu.uniquindio.proyectofinal.sameday.model.facade;
 
-import co.edu.uniquindio.proyectofinal.sameday.factory.ModelFactory;
-import co.edu.uniquindio.proyectofinal.sameday.model.Envio;
 import co.edu.uniquindio.proyectofinal.sameday.model.Repartidor;
-import co.edu.uniquindio.proyectofinal.sameday.model.Usuario;
-import co.edu.uniquindio.proyectofinal.sameday.model.enums.EstadoEnvio;
 import co.edu.uniquindio.proyectofinal.sameday.model.enums.EstadoRepartidor;
-import co.edu.uniquindio.proyectofinal.sameday.service.*;
+import co.edu.uniquindio.proyectofinal.sameday.factory.ModelFactory;
+import co.edu.uniquindio.proyectofinal.sameday.model.Usuario;
+import co.edu.uniquindio.proyectofinal.sameday.model.Direccion;
+import co.edu.uniquindio.proyectofinal.sameday.model.builder.UsuarioBuilder;
 
 import java.util.List;
-import java.util.Optional;
 
 public class AdminFacade {
 
-    private final UsuarioService usuarioService;
-    private final RepartidorService repartidorService;
-    private final EnvioService envioService;
+    private final ModelFactory modelFactory;
 
     public AdminFacade() {
-        this.usuarioService = ModelFactory.getInstance().getUsuarioService();
-        this.repartidorService = ModelFactory.getInstance().getRepartidorService();
-        this.envioService = ModelFactory.getInstance().getEnvioService();
+        this.modelFactory = ModelFactory.getInstance();
     }
 
-    // --------- Gestión de Usuarios ---------
-    public Usuario crearUsuario(Usuario u) { return usuarioService.crearUsuario(u); }
-    public List<Usuario> listarUsuarios() { return usuarioService.listarTodos(); }
-    public Usuario actualizarUsuario(Usuario u) { return usuarioService.actualizarUsuario(u); }
-    public boolean eliminarUsuario(String id) { return usuarioService.eliminarUsuario(id); }
-
-    // --------- Gestión de Repartidores ---------
-    public Repartidor crearRepartidor(Repartidor r) { return repartidorService.crear(r); }
-    public List<Repartidor> listarRepartidores() { return repartidorService.listar(); }
-    public boolean eliminarRepartidor(String id) { return repartidorService.eliminar(id); }
-    public void cambiarEstadoRepartidor(String id, EstadoRepartidor nuevoEstado) {
-        Optional<Repartidor> opt = repartidorService.obtener(id);
-        opt.ifPresent(r -> {
-            r.setEstado(nuevoEstado);
-            repartidorService.actualizar(r);
-        });
+    // --- Usuarios ---
+    public void crearUsuario(String nombre, String correo, String telefono, String cedula, String direccion) {
+        Direccion dir = new Direccion("D-" + cedula, "Casa", direccion, "Ciudad", "0,0");
+        Usuario usuario = new UsuarioBuilder()
+                .withId(cedula)
+                .withNombreCompleto(nombre)
+                .withCorreo(correo)
+                .withTelefono(telefono)
+                .build();
+        usuario.getMetodosPago().add(cedula);
+        usuario.getDireccionesFrecuentes().add(dir);
+        modelFactory.getUsuarioService().crearUsuario(usuario);
     }
 
-    // --------- Gestión de Envíos ---------
-    public void asignarEnvioARepartidor(String idEnvio, String idRepartidor) {
-        Optional<Envio> envioOpt = envioService.obtener(idEnvio);
-        Optional<Repartidor> repOpt = repartidorService.obtener(idRepartidor);
-        if (envioOpt.isPresent() && repOpt.isPresent()) {
-            Repartidor r = repOpt.get();
-            Envio e = envioOpt.get();
-            r.getEnviosAsignados().add(e);
-            e.setEstado(EstadoEnvio.ASIGNADO);
-            envioService.actualizar(e);
-            repartidorService.actualizar(r);
-        }
+    public void actualizarUsuario(Usuario usuario, String nombre, String correo, String telefono, String cedula, String direccion) {
+        usuario.setNombreCompleto(nombre);
+        usuario.setCorreo(correo);
+        usuario.setTelefono(telefono);
+        usuario.getMetodosPago().clear();
+        usuario.getMetodosPago().add(cedula);
+        usuario.getDireccionesFrecuentes().clear();
+        usuario.getDireccionesFrecuentes().add(new Direccion("D-" + cedula, "Casa", direccion, "Ciudad", "0,0"));
+        modelFactory.getUsuarioService().actualizarUsuario(usuario);
     }
 
-    public List<Envio> listarEnvios() { return envioService.listar(); }
-
-    // --------- Métricas básicas (ejemplo) ---------
-    public long contarEnviosEntregados() {
-        return envioService.listar().stream()
-                .filter(e -> e.getEstado() == EstadoEnvio.ENTREGADO)
-                .count();
+    public void eliminarUsuario(String idUsuario) {
+        modelFactory.getUsuarioService().eliminarUsuario(idUsuario);
     }
 
-    public long contarEnviosEnRuta() {
-        return envioService.listar().stream()
-                .filter(e -> e.getEstado() == EstadoEnvio.EN_RUTA)
-                .count();
+    public List<Usuario> listarUsuarios() {
+        return modelFactory.getUsuarioService().listarTodos();
+    }
+
+    // --- Repartidores ---
+    public void crearRepartidor(String id, String nombre, String documento, String telefono, EstadoRepartidor estado, String zona) {
+        Repartidor r = new Repartidor(id, nombre, documento, telefono, estado, zona);
+        modelFactory.getRepartidorService().crear(r);
+    }
+
+    public void actualizarRepartidor(Repartidor r, String nombre, String documento, String telefono, EstadoRepartidor estado, String zona) {
+        r.setNombre(nombre);
+        r.setDocumento(documento);
+        r.setTelefono(telefono);
+        r.setEstado(estado);
+        r.setZonaCobertura(zona);
+        modelFactory.getRepartidorService().actualizar(r);
+    }
+
+    public void eliminarRepartidor(String id) {
+        modelFactory.getRepartidorService().eliminar(id);
+    }
+
+    public List<Repartidor> listarRepartidores() {
+        return modelFactory.getRepartidorService().listar();
+    }
+
+    public void cambiarEstado(Repartidor r, EstadoRepartidor estado) {
+        r.setEstado(estado);
+        modelFactory.getRepartidorService().actualizar(r);
     }
 }
-
