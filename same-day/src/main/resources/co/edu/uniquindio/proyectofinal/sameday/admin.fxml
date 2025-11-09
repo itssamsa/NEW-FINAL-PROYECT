@@ -20,7 +20,7 @@
         </HBox>
     </top>
 
-    <!-- Panel central: StackPane alternando entre paneles -->
+    <!-- Panel central -->
     <center>
         <StackPane fx:id="stackPanel" prefWidth="600" prefHeight="400">
 
@@ -57,6 +57,11 @@
                     <Button text="Registrar" onAction="#registrarUsuario"/>
                     <Button text="Actualizar" onAction="#actualizarUsuario"/>
                     <Button text="Eliminar" onAction="#eliminarUsuario"/>
+                </HBox>
+
+                <!-- Tabla + botón de refrescar -->
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Button fx:id="btnRefrescarUsuarios" text="🔄 Actualizar" onAction="#actualizarTablaUsuarios"/>
                 </HBox>
 
                 <TableView fx:id="tablaUsuarios" prefHeight="200">

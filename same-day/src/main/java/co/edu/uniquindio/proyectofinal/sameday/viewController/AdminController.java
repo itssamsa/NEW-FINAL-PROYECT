@@ -37,6 +37,7 @@ public class AdminController {
     @FXML private TableColumn<Usuario, String> colTelefono;
     @FXML private TableColumn<Usuario, String> colCedula;
     @FXML private TableColumn<Usuario, String> colDireccion;
+    @FXML private Button btnRefrescarUsuarios;
 
     private ObservableList<Usuario> listaUsuarios;
     private Usuario usuarioSeleccionado;
@@ -207,6 +208,12 @@ public class AdminController {
     private String obtenerDireccion(Usuario u) {
         return (u.getDireccionesFrecuentes() != null && !u.getDireccionesFrecuentes().isEmpty())
                 ? u.getDireccionesFrecuentes().get(0).getCalle() : "";
+    }
+
+    @FXML
+    private void actualizarTablaUsuarios() {
+        cargarUsuarios();
+        tablaUsuarios.refresh();
     }
 
     // --- CRUD Repartidores ---
