@@ -1,14 +1,19 @@
 package co.edu.uniquindio.proyectofinal.sameday.viewController;
 
 import co.edu.uniquindio.proyectofinal.sameday.model.facade.AdminFacade;
+import co.edu.uniquindio.proyectofinal.sameday.model.Envio;
 import co.edu.uniquindio.proyectofinal.sameday.model.Repartidor;
 import co.edu.uniquindio.proyectofinal.sameday.model.Usuario;
+import co.edu.uniquindio.proyectofinal.sameday.model.enums.EstadoEnvio;
 import co.edu.uniquindio.proyectofinal.sameday.model.enums.EstadoRepartidor;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class AdminController {
 
@@ -18,6 +23,7 @@ public class AdminController {
     // --- Paneles ---
     @FXML private VBox panelUsuarios;
     @FXML private VBox panelRepartidores;
+    @FXML private VBox panelAsignacion;
 
     // --- Campos Usuarios ---
     @FXML private TextField txtNombre;
@@ -53,6 +59,14 @@ public class AdminController {
     private ObservableList<Repartidor> listaRepartidores;
     private Repartidor repartidorSeleccionado;
 
+    // --- Campos Asignación ---
+    @FXML private ComboBox<Envio> cbEnvios;
+    @FXML private ComboBox<Repartidor> cbRepartidores;
+    @FXML private Button btnAsignar;
+
+    private ObservableList<Envio> listaEnvios;
+    private ObservableList<Repartidor> listaRepartidoresActivos;
+
     // --- Inicialización ---
     @FXML
     public void initialize() {
@@ -63,6 +77,8 @@ public class AdminController {
 
         configurarTablaRepartidores();
         cargarRepartidores();
+
+        cargarEnvios();
 
         // Selección tabla usuarios
         tablaUsuarios.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
@@ -88,6 +104,9 @@ public class AdminController {
                 cbEstado.setValue(newVal.getEstado());
             }
         });
+
+        // Botón asignar repartidor a envío
+        btnAsignar.setOnAction(e -> asignarRepartidorAEnvio());
     }
 
     // --- Métodos para alternar paneles ---
@@ -95,17 +114,28 @@ public class AdminController {
     private void mostrarUsuarios() {
         panelUsuarios.setVisible(true);
         panelRepartidores.setVisible(false);
+        panelAsignacion.setVisible(false);
     }
 
     @FXML
     private void mostrarRepartidores() {
         panelUsuarios.setVisible(false);
         panelRepartidores.setVisible(true);
+        panelAsignacion.setVisible(false);
+    }
+
+    @FXML
+    private void mostrarAsignacion() {
+        panelUsuarios.setVisible(false);
+        panelRepartidores.setVisible(false);
+        panelAsignacion.setVisible(true);
+
+        cargarEnvios();
+        cargarRepartidoresActivos();
     }
 
     // --- CRUD Usuarios ---
-    @FXML
-    private void registrarUsuario() {
+    @FXML private void registrarUsuario() {
         if (camposVaciosUsuario()) {
             mostrarAlerta("Error", "Todos los campos son obligatorios.");
             return;
@@ -117,8 +147,7 @@ public class AdminController {
         mostrarAlerta("Éxito", "Usuario registrado correctamente.");
     }
 
-    @FXML
-    private void actualizarUsuario() {
+    @FXML private void actualizarUsuario() {
         if (usuarioSeleccionado == null) {
             mostrarAlerta("Advertencia", "Seleccione un usuario.");
             return;
@@ -130,8 +159,7 @@ public class AdminController {
         mostrarAlerta("Éxito", "Usuario actualizado correctamente.");
     }
 
-    @FXML
-    private void eliminarUsuario() {
+    @FXML private void eliminarUsuario() {
         if (usuarioSeleccionado == null) {
             mostrarAlerta("Advertencia", "Seleccione un usuario.");
             return;
@@ -182,8 +210,7 @@ public class AdminController {
     }
 
     // --- CRUD Repartidores ---
-    @FXML
-    private void registrarRepartidor() {
+    @FXML private void registrarRepartidor() {
         if (camposVaciosRepartidor()) {
             mostrarAlerta("Error", "Todos los campos son obligatorios.");
             return;
@@ -195,8 +222,7 @@ public class AdminController {
         mostrarAlerta("Éxito", "Repartidor registrado correctamente.");
     }
 
-    @FXML
-    private void actualizarRepartidor() {
+    @FXML private void actualizarRepartidor() {
         if (repartidorSeleccionado == null) {
             mostrarAlerta("Advertencia", "Seleccione un repartidor.");
             return;
@@ -208,8 +234,7 @@ public class AdminController {
         mostrarAlerta("Éxito", "Repartidor actualizado correctamente.");
     }
 
-    @FXML
-    private void eliminarRepartidor() {
+    @FXML private void eliminarRepartidor() {
         if (repartidorSeleccionado == null) {
             mostrarAlerta("Advertencia", "Seleccione un repartidor.");
             return;
@@ -253,6 +278,43 @@ public class AdminController {
         tablaRepartidores.getSelectionModel().clearSelection();
         repartidorSeleccionado = null;
     }
+
+    // --- Gestión Asignación de Envíos ---
+    private void cargarEnvios() {
+        List<Envio> enviosSolicitados = adminFacade.listarEnviosPorEstado(EstadoEnvio.SOLICITADO);
+        listaEnvios = FXCollections.observableArrayList(enviosSolicitados);
+        cbEnvios.setItems(listaEnvios);
+    }
+
+    private void cargarRepartidoresActivos() {
+        List<Repartidor> activos = adminFacade.listarRepartidores()
+                .stream()
+                .filter(r -> r.getEstado() == EstadoRepartidor.ACTIVO)
+                .collect(Collectors.toList());
+        listaRepartidoresActivos = FXCollections.observableArrayList(activos);
+        cbRepartidores.setItems(listaRepartidoresActivos);
+    }
+
+    @FXML
+    public void asignarRepartidorAEnvio() {
+        Envio envio = cbEnvios.getValue();
+        Repartidor repartidor = cbRepartidores.getValue();
+
+        if (envio == null || repartidor == null) {
+            mostrarAlerta("Error", "Seleccione un envío y un repartidor.");
+            return;
+        }
+
+        boolean exito = adminFacade.asignarRepartidorAEnvio(envio, repartidor);
+        if (exito) {
+            mostrarAlerta("Éxito", "Repartidor asignado correctamente.");
+            cargarEnvios();
+            cargarRepartidoresActivos();
+        } else {
+            mostrarAlerta("Error", "No se pudo asignar el repartidor.");
+        }
+    }
+
 
     // --- Alerta ---
     private void mostrarAlerta(String titulo, String mensaje) {

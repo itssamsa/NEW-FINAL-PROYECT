@@ -1,11 +1,13 @@
 package co.edu.uniquindio.proyectofinal.sameday.model.facade;
 
-import co.edu.uniquindio.proyectofinal.sameday.model.Repartidor;
-import co.edu.uniquindio.proyectofinal.sameday.model.enums.EstadoRepartidor;
 import co.edu.uniquindio.proyectofinal.sameday.factory.ModelFactory;
+import co.edu.uniquindio.proyectofinal.sameday.model.Envio;
+import co.edu.uniquindio.proyectofinal.sameday.model.Repartidor;
 import co.edu.uniquindio.proyectofinal.sameday.model.Usuario;
 import co.edu.uniquindio.proyectofinal.sameday.model.Direccion;
 import co.edu.uniquindio.proyectofinal.sameday.model.builder.UsuarioBuilder;
+import co.edu.uniquindio.proyectofinal.sameday.model.enums.EstadoEnvio;
+import co.edu.uniquindio.proyectofinal.sameday.model.enums.EstadoRepartidor;
 
 import java.util.List;
 
@@ -76,5 +78,15 @@ public class AdminFacade {
     public void cambiarEstado(Repartidor r, EstadoRepartidor estado) {
         r.setEstado(estado);
         modelFactory.getRepartidorService().actualizar(r);
+    }
+
+    // --- Envíos ---
+    public List<Envio> listarEnviosPorEstado(EstadoEnvio estado) {
+        // Usamos directamente el método del service
+        return modelFactory.getEnvioService().listarPorEstado(estado);
+    }
+
+    public boolean asignarRepartidorAEnvio(Envio envio, Repartidor repartidor) {
+        return modelFactory.getEnvioService().asignarRepartidor(envio.getIdEnvio(), repartidor);
     }
 }
