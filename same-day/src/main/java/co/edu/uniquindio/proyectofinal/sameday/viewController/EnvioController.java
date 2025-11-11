@@ -26,6 +26,7 @@ public class EnvioController {
     @FXML private CheckBox chkFirma;
     @FXML private CheckBox chkRastreo;
     @FXML private CheckBox chkNocturna;
+    @FXML private CheckBox chkFragil;
 
     private Envio envioActual;
 
@@ -83,6 +84,11 @@ public class EnvioController {
                 envioActual = new EnvioConEntregaNocturna(envioActual);
                 costoAdicional += 8.0;
                 envioActual.addServicioAdicional(ServicioAdicional.ENTREGA_NOCTURNA);
+            }
+            if (chkFragil.isSelected()) {
+                envioActual = new EnvioFragil(envioActual);
+                costoAdicional += 7.0;
+                envioActual.addServicioAdicional(ServicioAdicional.FRAGIL);
             }
 
             // factory

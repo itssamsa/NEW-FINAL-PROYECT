@@ -3,16 +3,16 @@ package co.edu.uniquindio.proyectofinal.sameday.model.decorator;
 import co.edu.uniquindio.proyectofinal.sameday.model.Envio;
 import co.edu.uniquindio.proyectofinal.sameday.model.enums.ServicioAdicional;
 
-public class EnvioConEntregaNocturna extends EnvioDecorator {
-    public EnvioConEntregaNocturna(Envio envioBase) {
+public class EnvioFragil extends EnvioDecorator {
+    public EnvioFragil(Envio envioBase) {
         super(envioBase);
-        envioBase.addServicioAdicional(ServicioAdicional.ENTREGA_NOCTURNA);
+        envioBase.addServicioAdicional(ServicioAdicional.FRAGIL);
 
     }
 
     @Override
     public double getCosto() {
-        return super.getCosto() + 8.0;
+        return super.getCosto() + 7.0;
     }
 
     @Override

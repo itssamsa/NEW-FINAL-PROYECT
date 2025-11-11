@@ -24,6 +24,7 @@ public class UsuarioController {
     @FXML private TableColumn<Usuario, String> colTelefono;
     @FXML private TableColumn<Usuario, String> colCedula;
     @FXML private TableColumn<Usuario, String> colDireccion;
+    @FXML private Button btnRefrescarUsuarios;
 
     private UsuarioService usuarioService;
     private ObservableList<Usuario> listaObservableUsuarios;
@@ -61,6 +62,12 @@ public class UsuarioController {
     private void cargarUsuarios() {
         listaObservableUsuarios = FXCollections.observableArrayList(usuarioService.listarTodos());
         tablaUsuarios.setItems(listaObservableUsuarios);
+    }
+
+    @FXML
+    private void actualizarTablaUsuarios() {
+        cargarUsuarios();
+        tablaUsuarios.refresh();
     }
 
     @FXML

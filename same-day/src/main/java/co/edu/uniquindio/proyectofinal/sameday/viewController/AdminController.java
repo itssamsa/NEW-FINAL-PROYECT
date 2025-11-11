@@ -56,6 +56,9 @@ public class AdminController {
     @FXML private TableColumn<Repartidor, String> colTelefonoRR;
     @FXML private TableColumn<Repartidor, String> colZonaR;
     @FXML private TableColumn<Repartidor, String> colEstadoR;
+    @FXML private Button btnRefrescarRepartidores;
+
+
 
     private ObservableList<Repartidor> listaRepartidores;
     private Repartidor repartidorSeleccionado;
@@ -285,6 +288,13 @@ public class AdminController {
         tablaRepartidores.getSelectionModel().clearSelection();
         repartidorSeleccionado = null;
     }
+
+    @FXML
+    private void actualizarTablaRepartidores() {
+        cargarRepartidores();
+        tablaRepartidores.refresh();
+    }
+
 
     // --- Gestión Asignación de Envíos ---
     private void cargarEnvios() {

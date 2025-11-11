@@ -24,6 +24,8 @@ public class RepartidorController {
     @FXML private TableColumn<Repartidor, String> colTelefono;
     @FXML private TableColumn<Repartidor, String> colZona;
     @FXML private TableColumn<Repartidor, String> colEstado;
+    @FXML private Button btnRefrescarRepartidor;
+
 
     private final ModelFactory modelFactory = ModelFactory.getInstance();
     private final ObservableList<Repartidor> listaObservable = FXCollections.observableArrayList();
@@ -168,6 +170,13 @@ public class RepartidorController {
         tablaRepartidores.getSelectionModel().clearSelection();
         repartidorSeleccionado = null;
     }
+
+    @FXML
+    private void actualizarTablaRepartidores() {
+        cargarRepartidores();
+        tablaRepartidores.refresh();
+    }
+
 
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);

@@ -113,6 +113,11 @@
                     <Button text="Eliminar" onAction="#eliminarRepartidor"/>
                 </HBox>
 
+                <!-- Botón de refrescar repartidores -->
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Button fx:id="btnRefrescarRepartidores" text="🔄 Actualizar" onAction="#actualizarTablaRepartidores"/>
+                </HBox>
+
                 <TableView fx:id="tablaRepartidores" prefHeight="200">
                     <columns>
                         <TableColumn fx:id="colId" text="ID" prefWidth="80"/>

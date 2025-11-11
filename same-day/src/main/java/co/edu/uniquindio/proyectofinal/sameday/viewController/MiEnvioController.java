@@ -94,7 +94,7 @@ public class MiEnvioController {
 
         EstadoEnvio estado = envioActual.getEstado();
 
-        if (estado == null || estado == EstadoEnvio.SOLICITADO) {
+        if (estado == EstadoEnvio.SOLICITADO) {
             ModelFactory.getInstance().getEnvioService().eliminar(envioActual.getIdEnvio());
             txtInfoEnvio.clear();
             txtIdEnvio.clear();
@@ -103,7 +103,8 @@ public class MiEnvioController {
             mostrarAlerta("Cancelado", "El envío fue cancelado correctamente y eliminado del sistema.");
         } else {
             mostrarAlerta("No permitido",
-                    "El envío no puede ser cancelado porque su estado actual es: " + estado);
+                    "El envío no puede ser cancelado porque su estado actual es: " + estado +
+                            ". Solo los envíos en estado 'SOLICITADO' pueden cancelarse.");
         }
     }
 
