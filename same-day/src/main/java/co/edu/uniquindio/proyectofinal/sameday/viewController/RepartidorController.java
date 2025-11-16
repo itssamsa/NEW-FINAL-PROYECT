@@ -1,8 +1,11 @@
 package co.edu.uniquindio.proyectofinal.sameday.viewController;
 
 import co.edu.uniquindio.proyectofinal.sameday.factory.ModelFactory;
+import co.edu.uniquindio.proyectofinal.sameday.model.Envio;
 import co.edu.uniquindio.proyectofinal.sameday.model.Repartidor;
+import co.edu.uniquindio.proyectofinal.sameday.model.enums.EstadoEnvio;
 import co.edu.uniquindio.proyectofinal.sameday.model.enums.EstadoRepartidor;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -10,6 +13,7 @@ import javafx.scene.control.*;
 
 public class RepartidorController {
 
+    // Campos del repartidor
     @FXML private TextField txtId;
     @FXML private TextField txtNombre;
     @FXML private TextField txtDocumento;
@@ -17,6 +21,7 @@ public class RepartidorController {
     @FXML private TextField txtZona;
     @FXML private ComboBox<EstadoRepartidor> cbEstado;
 
+    // Tabla repartidores
     @FXML private TableView<Repartidor> tablaRepartidores;
     @FXML private TableColumn<Repartidor, String> colId;
     @FXML private TableColumn<Repartidor, String> colNombre;
@@ -24,43 +29,81 @@ public class RepartidorController {
     @FXML private TableColumn<Repartidor, String> colTelefono;
     @FXML private TableColumn<Repartidor, String> colZona;
     @FXML private TableColumn<Repartidor, String> colEstado;
-    @FXML private Button btnRefrescarRepartidor;
+    @FXML private Button btnRefrescarRepartidores;
 
+    // Tabla de envíos asignados (lado derecho)
+    @FXML private TableView<Envio> tablaEnvios;
+    @FXML private TableColumn<Envio, String> colEnvioId;
+    @FXML private TableColumn<Envio, String> colEnvioEstado;
+
+    @FXML private ComboBox<EstadoEnvio> cbEstadoEnvio;
 
     private final ModelFactory modelFactory = ModelFactory.getInstance();
     private final ObservableList<Repartidor> listaObservable = FXCollections.observableArrayList();
 
     private Repartidor repartidorSeleccionado;
+    private Envio envioSeleccionado;
 
     @FXML
     public void initialize() {
+
+        // Estados del repartidor
         cbEstado.getItems().addAll(EstadoRepartidor.values());
-        configurarTabla();
+
+        configurarTablaRepartidores();
         cargarRepartidores();
 
+        // Configurar tabla de envíos
+        configurarTablaEnvios();
+        cbEstadoEnvio.getItems().addAll(EstadoEnvio.EN_RUTA, EstadoEnvio.ENTREGADO, EstadoEnvio.INCIDENCIA);
+
+        // Listener al seleccionar repartidor
         tablaRepartidores.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
+            repartidorSeleccionado = newSel;
             if (newSel != null) {
-                repartidorSeleccionado = newSel;
                 llenarCamposDesdeTabla(newSel);
+                cargarEnviosAsignados(newSel);
             }
+        });
+
+        // Listener al seleccionar envío
+        tablaEnvios.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
+            envioSeleccionado = newSel;
         });
     }
 
-    private void configurarTabla() {
-        colId.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getIdRepartidor()));
-        colNombre.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getNombre()));
-        colDocumento.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getDocumento()));
-        colTelefono.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getTelefono()));
-        colZona.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getZonaCobertura()));
-        colEstado.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(
-                data.getValue().getEstado() != null ? data.getValue().getEstado().name() : "N/A"
-        ));
+
+    // ---------------- TABLAS ------------------
+
+    private void configurarTablaRepartidores() {
+        colId.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getIdRepartidor()));
+        colNombre.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNombre()));
+        colDocumento.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDocumento()));
+        colTelefono.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTelefono()));
+        colZona.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getZonaCobertura()));
+        colEstado.setCellValueFactory(data ->
+                new SimpleStringProperty(data.getValue().getEstado() != null ? data.getValue().getEstado().name() : "N/A")
+        );
+    }
+
+    private void configurarTablaEnvios() {
+        colEnvioId.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getIdEnvio()));
+        colEnvioEstado.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getEstado().name()));
     }
 
     private void cargarRepartidores() {
         listaObservable.setAll(modelFactory.getRepartidorService().listar());
         tablaRepartidores.setItems(listaObservable);
     }
+
+    private void cargarEnviosAsignados(Repartidor r) {
+        tablaEnvios.setItems(
+                FXCollections.observableArrayList(r.getEnviosAsignados())
+        );
+    }
+
+
+    // ---------------- CRUD ------------------
 
     @FXML
     private void crearRepartidor() {
@@ -91,8 +134,10 @@ public class RepartidorController {
             return;
         }
 
-        repartidorSeleccionado.setEstado(cbEstado.getValue());
-        repartidorSeleccionado.setEstado(cbEstado.getValue());
+        repartidorSeleccionado.setNombre(txtNombre.getText());
+        repartidorSeleccionado.setDocumento(txtDocumento.getText());
+        repartidorSeleccionado.setTelefono(txtTelefono.getText());
+        repartidorSeleccionado.setZonaCobertura(txtZona.getText());
         repartidorSeleccionado.setEstado(cbEstado.getValue());
 
         modelFactory.getRepartidorService().actualizar(repartidorSeleccionado);
@@ -103,46 +148,45 @@ public class RepartidorController {
     @FXML
     private void eliminarRepartidor() {
         if (repartidorSeleccionado == null) {
-            mostrarAlerta("Advertencia", "Seleccione un repartidor de la tabla.");
+            mostrarAlerta("Advertencia", "Seleccione un repartidor.");
             return;
         }
 
         modelFactory.getRepartidorService().eliminar(repartidorSeleccionado.getIdRepartidor());
         cargarRepartidores();
+        tablaEnvios.getItems().clear();
         limpiarCampos();
         mostrarAlerta("Eliminado", "Repartidor eliminado correctamente.");
     }
 
+
+    // ---------------- ENVÍOS ------------------
+
+    // ❌ MÉTODO ELIMINADO:
+    // @FXML private void verEnviosAsignados() { ... }
+
+
+
+
     @FXML
-    private void cambiarEstado() {
-        if (repartidorSeleccionado == null) {
-            mostrarAlerta("Advertencia", "Seleccione un repartidor.");
+    private void cambiarEstadoEnvio() {
+        if (envioSeleccionado == null) {
+            mostrarAlerta("Error", "Seleccione un envío.");
             return;
         }
 
-        EstadoRepartidor nuevoEstado = cbEstado.getValue();
-        repartidorSeleccionado.setEstado(nuevoEstado);
-        modelFactory.getRepartidorService().actualizar(repartidorSeleccionado);
-        tablaRepartidores.refresh();
-        mostrarAlerta("Cambio de estado", "El repartidor ahora está " + nuevoEstado + ".");
-    }
-
-    @FXML
-    private void verEnviosAsignados() {
-        if (repartidorSeleccionado == null) {
-            mostrarAlerta("Advertencia", "Seleccione un repartidor.");
+        if (cbEstadoEnvio.getValue() == null) {
+            mostrarAlerta("Error", "Seleccione un estado nuevo.");
             return;
         }
 
-        var envios = repartidorSeleccionado.getEnviosAsignados();
-        if (envios.isEmpty()) {
-            mostrarAlerta("Sin envíos", "El repartidor no tiene envíos asignados.");
-        } else {
-            StringBuilder info = new StringBuilder("Envíos asignados:\n");
-            envios.forEach(e -> info.append("- ").append(e.getIdEnvio()).append(" (").append(e.getEstado()).append(")\n"));
-            mostrarAlerta("Detalle", info.toString());
-        }
+        envioSeleccionado.setEstado(cbEstadoEnvio.getValue());
+        tablaEnvios.refresh();
+        mostrarAlerta("Éxito", "Estado del envío actualizado.");
     }
+
+
+    // ---------------- UTILIDADES ------------------
 
     private void llenarCamposDesdeTabla(Repartidor r) {
         txtId.setText(r.getIdRepartidor());
@@ -154,9 +198,12 @@ public class RepartidorController {
     }
 
     private boolean camposVacios() {
-        return txtId.getText().isEmpty() || txtNombre.getText().isEmpty()
-                || txtDocumento.getText().isEmpty() || txtTelefono.getText().isEmpty()
-                || txtZona.getText().isEmpty() || cbEstado.getValue() == null;
+        return txtId.getText().isEmpty() ||
+                txtNombre.getText().isEmpty() ||
+                txtDocumento.getText().isEmpty() ||
+                txtTelefono.getText().isEmpty() ||
+                txtZona.getText().isEmpty() ||
+                cbEstado.getValue() == null;
     }
 
     @FXML
@@ -167,8 +214,12 @@ public class RepartidorController {
         txtTelefono.clear();
         txtZona.clear();
         cbEstado.getSelectionModel().clearSelection();
+
         tablaRepartidores.getSelectionModel().clearSelection();
+        tablaEnvios.getItems().clear();
+
         repartidorSeleccionado = null;
+        envioSeleccionado = null;
     }
 
     @FXML
@@ -176,7 +227,6 @@ public class RepartidorController {
         cargarRepartidores();
         tablaRepartidores.refresh();
     }
-
 
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);
