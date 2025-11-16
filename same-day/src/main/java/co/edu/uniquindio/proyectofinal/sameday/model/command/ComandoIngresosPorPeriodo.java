@@ -1,8 +1,27 @@
 package co.edu.uniquindio.proyectofinal.sameday.model.command;
 
+import co.edu.uniquindio.proyectofinal.sameday.factory.ModelFactory;
+import co.edu.uniquindio.proyectofinal.sameday.model.Envio;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class ComandoIngresosPorPeriodo implements ComandoMetrica {
+
+    private Map<String, Double> ingresosPorPeriodo;
+
     @Override
     public void ejecutar() {
-        System.out.println("Calculando ingresos por período...");
+        ingresosPorPeriodo = new HashMap<>();
+        List<Envio> envios = ModelFactory.getInstance().getEnvioService().listar(); // método correcto
+        for (Envio e : envios) {
+            String mes = e.getFechaCreacion().getMonth().toString(); // agrupado por mes
+            ingresosPorPeriodo.put(mes, ingresosPorPeriodo.getOrDefault(mes, 0.0) + e.getCostoTotal());
+        }
+    }
+
+    public Map<String, Double> getIngresosPorPeriodo() {
+        return ingresosPorPeriodo;
     }
 }

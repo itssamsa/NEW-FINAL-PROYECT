@@ -18,6 +18,14 @@
             </content>
         </Tab>
 
+        <Tab closable="false" text="Metricas">
+            <content>
+                <AnchorPane>
+                    <fx:include source="PanelMetricas.fxml" />
+                </AnchorPane>
+            </content>
+        </Tab>
+
 
         <Tab closable="false" text="Repartidor">
             <content>

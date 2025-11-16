@@ -1,76 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17.0.6"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.AdminController">
+<BorderPane prefHeight="543.0" prefWidth="714.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.AdminController">
 
     <!-- Barra superior con botones para cambiar panel -->
     <top>
         <HBox spacing="10">
             <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
+                <Insets bottom="10" left="10" right="10" top="10" />
             </padding>
-            <Button text="Gestión Usuarios" onAction="#mostrarUsuarios"/>
-            <Button text="Gestión Repartidores" onAction="#mostrarRepartidores"/>
-            <Button text="Asignación Envíos" onAction="#mostrarAsignacion"/>
+            <Button onAction="#mostrarUsuarios" text="Gestión Usuarios" />
+            <Button onAction="#mostrarRepartidores" text="Gestión Repartidores" />
+            <Button onAction="#mostrarAsignacion" text="Asignación Envíos" />
         </HBox>
     </top>
 
     <!-- Panel central -->
     <center>
-        <StackPane fx:id="stackPanel" prefWidth="600" prefHeight="400">
+        <StackPane fx:id="stackPanel" prefHeight="400" prefWidth="600">
 
             <!-- Panel Usuarios -->
             <VBox fx:id="panelUsuarios" spacing="10">
                 <padding>
-                    <Insets top="15" right="15" bottom="15" left="15"/>
+                    <Insets bottom="15" left="15" right="15" top="15" />
                 </padding>
-                <Label text="Administración de Usuarios" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Administración de Usuarios" />
 
                 <GridPane hgap="10" vgap="10">
                     <columnConstraints>
-                        <ColumnConstraints percentWidth="25"/>
-                        <ColumnConstraints percentWidth="75"/>
+                        <ColumnConstraints percentWidth="25" />
+                        <ColumnConstraints percentWidth="75" />
                     </columnConstraints>
 
-                    <Label text="Nombre:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                    <TextField fx:id="txtNombre" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                    <Label text="Nombre:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <TextField fx:id="txtNombre" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                    <Label text="Correo:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                    <TextField fx:id="txtCorreo" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                    <Label text="Correo:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <TextField fx:id="txtCorreo" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                    <Label text="Teléfono:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                    <TextField fx:id="txtTelefono" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                    <Label text="Teléfono:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                    <TextField fx:id="txtTelefono" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-                    <Label text="Cédula:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-                    <TextField fx:id="txtCedula" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                    <Label text="Cédula:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                    <TextField fx:id="txtCedula" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-                    <Label text="Dirección:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-                    <TextField fx:id="txtDireccion" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                    <Label text="Dirección:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                    <TextField fx:id="txtDireccion" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
                 </GridPane>
 
                 <HBox spacing="10">
-                    <Button text="Registrar" onAction="#registrarUsuario"/>
-                    <Button text="Actualizar" onAction="#actualizarUsuario"/>
-                    <Button text="Eliminar" onAction="#eliminarUsuario"/>
+                    <Button onAction="#registrarUsuario" text="Registrar" />
+                    <Button onAction="#actualizarUsuario" text="Actualizar" />
+                    <Button onAction="#eliminarUsuario" text="Eliminar" />
                 </HBox>
 
                 <!-- Tabla + botón de refrescar -->
-                <HBox spacing="10" alignment="CENTER_RIGHT">
-                    <Button fx:id="btnRefrescarUsuarios" text="🔄 Actualizar" onAction="#actualizarTablaUsuarios"/>
+                <HBox alignment="CENTER_RIGHT" spacing="10">
+                    <Button fx:id="btnRefrescarUsuarios" onAction="#actualizarTablaUsuarios" text="🔄 Actualizar" />
                 </HBox>
 
                 <TableView fx:id="tablaUsuarios" prefHeight="200">
                     <columns>
-                        <TableColumn fx:id="colNombre" text="Nombre" prefWidth="120"/>
-                        <TableColumn fx:id="colCorreo" text="Correo" prefWidth="120"/>
-                        <TableColumn fx:id="colTelefono" text="Teléfono" prefWidth="100"/>
-                        <TableColumn fx:id="colCedula" text="Cédula" prefWidth="100"/>
-                        <TableColumn fx:id="colDireccion" text="Dirección" prefWidth="120"/>
+                        <TableColumn fx:id="colNombre" prefWidth="120" text="Nombre" />
+                        <TableColumn fx:id="colCorreo" prefWidth="120" text="Correo" />
+                        <TableColumn fx:id="colTelefono" prefWidth="100" text="Teléfono" />
+                        <TableColumn fx:id="colCedula" prefWidth="100" text="Cédula" />
+                        <TableColumn fx:id="colDireccion" prefWidth="120" text="Dirección" />
                     </columns>
                 </TableView>
             </VBox>
@@ -78,54 +94,62 @@
             <!-- Panel Repartidores -->
             <VBox fx:id="panelRepartidores" spacing="10" visible="false">
                 <padding>
-                    <Insets top="15" right="15" bottom="15" left="15"/>
+                    <Insets bottom="15" left="15" right="15" top="15" />
                 </padding>
-                <Label text="Administración de Repartidores" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Administración de Repartidores" />
 
                 <GridPane hgap="10" vgap="10">
                     <columnConstraints>
-                        <ColumnConstraints percentWidth="25"/>
-                        <ColumnConstraints percentWidth="75"/>
+                        <ColumnConstraints percentWidth="25" />
+                        <ColumnConstraints percentWidth="75" />
                     </columnConstraints>
 
-                    <Label text="ID:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                    <TextField fx:id="txtId" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                    <Label text="ID:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <TextField fx:id="txtId" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                    <Label text="Nombre:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                    <TextField fx:id="txtNombreR" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                    <Label text="Nombre:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <TextField fx:id="txtNombreR" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-                    <Label text="Documento:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                    <TextField fx:id="txtDocumento" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                    <Label text="Documento:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                    <TextField fx:id="txtDocumento" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-                    <Label text="Teléfono:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-                    <TextField fx:id="txtTelefonoR" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                    <Label text="Teléfono:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                    <TextField fx:id="txtTelefonoR" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-                    <Label text="Zona Cobertura:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-                    <TextField fx:id="txtZona" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                    <Label text="Zona Cobertura:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                    <TextField fx:id="txtZona" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
-                    <Label text="Estado:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-                    <ComboBox fx:id="cbEstado" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                    <Label text="Estado:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                    <ComboBox fx:id="cbEstado" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
                 </GridPane>
 
                 <HBox spacing="10">
-                    <Button text="Registrar" onAction="#registrarRepartidor"/>
-                    <Button text="Actualizar" onAction="#actualizarRepartidor"/>
-                    <Button text="Eliminar" onAction="#eliminarRepartidor"/>
+                    <Button onAction="#registrarRepartidor" text="Registrar" />
+                    <Button onAction="#actualizarRepartidor" text="Actualizar" />
+                    <Button onAction="#eliminarRepartidor" text="Eliminar" />
                 </HBox>
 
                 <!-- Botón de refrescar repartidores -->
-                <HBox spacing="10" alignment="CENTER_RIGHT">
-                    <Button fx:id="btnRefrescarRepartidores" text="🔄 Actualizar" onAction="#actualizarTablaRepartidores"/>
+                <HBox alignment="CENTER_RIGHT" spacing="10">
+                    <Button fx:id="btnRefrescarRepartidores" onAction="#actualizarTablaRepartidores" text="🔄 Actualizar" />
                 </HBox>
 
                 <TableView fx:id="tablaRepartidores" prefHeight="200">
                     <columns>
-                        <TableColumn fx:id="colId" text="ID" prefWidth="80"/>
-                        <TableColumn fx:id="colNombreRR" text="Nombre" prefWidth="120"/>
-                        <TableColumn fx:id="colDocumentoR" text="Documento" prefWidth="100"/>
-                        <TableColumn fx:id="colTelefonoRR" text="Teléfono" prefWidth="100"/>
-                        <TableColumn fx:id="colZonaR" text="Zona" prefWidth="100"/>
-                        <TableColumn fx:id="colEstadoR" text="Estado" prefWidth="80"/>
+                        <TableColumn fx:id="colId" prefWidth="80" text="ID" />
+                        <TableColumn fx:id="colNombreRR" prefWidth="120" text="Nombre" />
+                        <TableColumn fx:id="colDocumentoR" prefWidth="100" text="Documento" />
+                        <TableColumn fx:id="colTelefonoRR" prefWidth="100" text="Teléfono" />
+                        <TableColumn fx:id="colZonaR" prefWidth="100" text="Zona" />
+                        <TableColumn fx:id="colEstadoR" prefWidth="80" text="Estado" />
                     </columns>
                 </TableView>
             </VBox>
@@ -133,25 +157,29 @@
             <!-- Panel Asignación Envíos -->
             <VBox fx:id="panelAsignacion" spacing="10" visible="false">
                 <padding>
-                    <Insets top="15" right="15" bottom="15" left="15"/>
+                    <Insets bottom="15" left="15" right="15" top="15" />
                 </padding>
-                <Label text="Asignación de Envíos" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Asignación de Envíos" />
 
                 <GridPane hgap="10" vgap="10">
                     <columnConstraints>
-                        <ColumnConstraints percentWidth="25"/>
-                        <ColumnConstraints percentWidth="75"/>
+                        <ColumnConstraints percentWidth="25" />
+                        <ColumnConstraints percentWidth="75" />
                     </columnConstraints>
 
-                    <Label text="Envío:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                    <ComboBox fx:id="cbEnvios" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                    <Label text="Envío:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <ComboBox fx:id="cbEnvios" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                    <Label text="Repartidor:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                    <ComboBox fx:id="cbRepartidores" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                    <Label text="Repartidor:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <ComboBox fx:id="cbRepartidores" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
                 </GridPane>
 
                 <HBox spacing="10">
-                    <Button fx:id="btnAsignar" text="Asignar Repartidor"/>
+                    <Button fx:id="btnAsignar" text="Asignar Repartidor" />
                 </HBox>
             </VBox>
 
