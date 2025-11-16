@@ -72,4 +72,7 @@ public class Envio {
                 ", pagado=" + pagado +
                 '}';
     }
+
+    public void setDistancia(double distancia) {
+    }
 }

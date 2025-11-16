@@ -17,7 +17,11 @@ public class EnvioController {
     @FXML private TextField txtIdUsuario;
     @FXML private TextField txtPeso;
     @FXML private TextField txtVolumen;
+
     @FXML private ComboBox<String> cbEstrategia;
+    @FXML private ComboBox<Direccion> cbOrigen;
+    @FXML private ComboBox<Direccion> cbDestino;
+
     @FXML private Label lblCostoTotal;
     @FXML private TextArea txtResumen;
 
@@ -29,6 +33,7 @@ public class EnvioController {
     @FXML private CheckBox chkFragil;
 
     private Envio envioActual;
+    private Usuario usuarioActual;
 
     @FXML
     public void initialize() {
@@ -37,39 +42,117 @@ public class EnvioController {
         txtResumen.setText("Resumen del envío:");
     }
 
+    // ---------------------------------------------------------
+    // Cargar direcciones del usuario
+    // ---------------------------------------------------------
+    @FXML
+    private void cargarDireccionesUsuario() {
+
+        if (txtIdUsuario.getText().isEmpty()) {
+            mostrarAlerta("Advertencia", "Ingrese un ID de usuario.");
+            return;
+        }
+
+        Optional<Usuario> usuarioOpt =
+                ModelFactory.getInstance().getUsuarioService().obtenerPorId(txtIdUsuario.getText());
+
+        if (usuarioOpt.isEmpty()) {
+            mostrarAlerta("Error", "Usuario no encontrado.");
+            return;
+        }
+
+        usuarioActual = usuarioOpt.get();
+
+        cbOrigen.getItems().clear();
+        cbDestino.getItems().clear();
+
+        cbOrigen.getItems().addAll(usuarioActual.getDireccionesFrecuentes());
+        cbDestino.getItems().addAll(usuarioActual.getDireccionesFrecuentes());
+    }
+
+    // ---------------------------------------------------------
+    // Parsear coordenadas flexible (1 o 2 números)
+    // ---------------------------------------------------------
+    private double[] parsearCoordenadas(Direccion d) {
+
+        if (d == null || d.getCoordenadas() == null || d.getCoordenadas().trim().isEmpty()) {
+            throw new IllegalArgumentException("Coordenadas vacías para la dirección: " + d.getAlias());
+        }
+
+        String raw = d.getCoordenadas().trim();
+
+        // 1. Reemplazar guion por separador
+        raw = raw.replace("-", " ");
+
+        // 2. Convertir múltiples espacios en uno
+        raw = raw.replaceAll("\\s+", " ");
+
+        String[] parts;
+
+        if (raw.contains(",")) {
+            parts = raw.split(",");
+        } else {
+            parts = raw.split(" ");
+        }
+
+        double lat, lon;
+
+        if (parts.length == 1) {
+            // Solo un número: usar ese valor como latitud, longitud = 0
+            lat = Double.parseDouble(parts[0].trim());
+            lon = 0;
+        } else {
+            lat = Double.parseDouble(parts[0].trim());
+            lon = Double.parseDouble(parts[1].trim());
+        }
+
+        return new double[]{lat, lon};
+    }
+
+    // ---------------------------------------------------------
+    // Calcular distancia robusta
+    // ---------------------------------------------------------
+    private double calcularDistancia(Direccion d1, Direccion d2) {
+
+        double[] c1 = parsearCoordenadas(d1);
+        double[] c2 = parsearCoordenadas(d2);
+
+        double x1 = c1[0], y1 = c1[1];
+        double x2 = c2[0], y2 = c2[1];
+
+        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    }
+
+    // ---------------------------------------------------------
+    // Calcular tarifa
+    // ---------------------------------------------------------
     @FXML
     private void calcularTarifa() {
         try {
-            if (txtIdUsuario.getText().isEmpty()) {
-                mostrarAlerta("Error", "Debe ingresar el ID del usuario.");
+
+            if (usuarioActual == null) {
+                mostrarAlerta("Error", "Primero debe cargar las direcciones del usuario.");
                 return;
             }
 
-            // Buscar usuario registrado por ID
-            Optional<Usuario> usuarioOpt = ModelFactory.getInstance()
-                    .getUsuarioService().obtenerPorId(txtIdUsuario.getText());
+            Direccion origen = cbOrigen.getValue();
+            Direccion destino = cbDestino.getValue();
 
-            if (usuarioOpt.isEmpty()) {
-                mostrarAlerta("Error", "No se encontró ningún usuario con ese ID registrado.");
+            if (origen == null || destino == null) {
+                mostrarAlerta("Error", "Seleccione origen y destino.");
                 return;
             }
-
-            Usuario usuario = usuarioOpt.get();
-
-            // Direcciones predeterminadas (por ahora)
-            Direccion origen = new Direccion("D1", "Bodega Central", "Calle 10 #20-30", "Armenia", "0,0");
-            Direccion destino = new Direccion("D2", "Destino Cliente", "Carrera 15 #40-22", "Cali", "0,0");
 
             double peso = Double.parseDouble(txtPeso.getText());
             double volumen = Double.parseDouble(txtVolumen.getText());
 
             String idEnvio = String.format("E-%04d", new Random().nextInt(10000));
 
-            envioActual = new Envio(idEnvio, origen, destino, peso, volumen, usuario);
+            envioActual = new Envio(idEnvio, origen, destino, peso, volumen, usuarioActual);
 
-            double costoAdicional = 0.0;
+            double costoAdicional = 0;
 
-            //decarotor
+            // Decorators
             if (chkSeguro.isSelected()) {
                 envioActual = new EnvioConSeguro(envioActual);
                 costoAdicional += 10.0;
@@ -91,7 +174,7 @@ public class EnvioController {
                 envioActual.addServicioAdicional(ServicioAdicional.FRAGIL);
             }
 
-            // factory
+            // Factory
             if (chkPrioridad.isSelected()) {
                 ServicioAdicionalFactory prioridadFactory = new PrioridadFactory();
                 envioActual.addServicioAdicional(prioridadFactory.crearServicio());
@@ -103,10 +186,15 @@ public class EnvioController {
                 costoAdicional += 4.0;
             }
 
-            // strategy
+            // Estrategia
             EstrategiaTarifa estrategia;
+
             switch (cbEstrategia.getValue()) {
-                case "Por distancia" -> estrategia = new TarifaPorDistancia();
+                case "Por distancia" -> {
+                    estrategia = new TarifaPorDistancia();
+                    double distancia = calcularDistancia(origen, destino);
+                    envioActual.setDistancia(distancia);
+                }
                 case "Por prioridad" -> estrategia = new TarifaPorPrioridad();
                 default -> estrategia = new TarifaPorPeso();
             }
@@ -117,11 +205,14 @@ public class EnvioController {
             envioActual.setCostoTotal(costoFinal);
 
             lblCostoTotal.setText("Costo total estimado: $" + costoFinal);
+
             txtResumen.setText(
-                    "Usuario: " + usuario.getNombreCompleto() +
-                            "\nID Usuario: " + usuario.getIdUsuario() +
+                    "Usuario: " + usuarioActual.getNombreCompleto() +
+                            "\nOrigen: " + origen.getAlias() +
                             "\nID Envío: " + idEnvio +
-                            "\nEstrategia: " + estrategia.descripcion() +
+                            "\nDestino: " + destino.getAlias() +
+                            "\nPeso: " + peso +
+                            "\nVolumen: " + volumen +
                             "\nCosto base: $" + costoBase +
                             "\nServicios adicionales: " + envioActual.getServiciosAdicionales() +
                             "\nCosto adicional: $" + costoAdicional +
@@ -129,27 +220,26 @@ public class EnvioController {
                             "\nCosto total: $" + costoFinal
             );
 
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error", "El peso y volumen deben ser valores numéricos.");
         } catch (Exception e) {
-            mostrarAlerta("Error", "Ocurrió un problema al calcular la tarifa.");
-            e.printStackTrace();
+            mostrarAlerta("Error", "Ocurrió un problema: " + e.getMessage());
         }
     }
 
+    // ---------------------------------------------------------
+    // Confirmar envío
+    // ---------------------------------------------------------
     @FXML
     private void confirmarEnvio() {
+
         if (envioActual == null) {
-            mostrarAlerta("Error", "Primero calcule la tarifa antes de confirmar.");
+            mostrarAlerta("Error", "Primero calcule la tarifa.");
             return;
         }
 
         ModelFactory.getInstance().getEnvioService().crear(envioActual);
 
         mostrarAlerta("Confirmación",
-                "✅ Envío registrado correctamente.\n" +
-                        "ID de Envío: " + envioActual.getIdEnvio() + "\n" +
-                        "Asociado al usuario: " + envioActual.getUsuario().getNombreCompleto() + ".");
+                "Envío registrado.\nID: " + envioActual.getIdEnvio());
 
         limpiarCampos();
     }
@@ -157,28 +247,26 @@ public class EnvioController {
     @FXML
     private void cancelarEnvio() {
         limpiarCampos();
-        mostrarAlerta("Cancelación", "El envío ha sido cancelado.");
+        mostrarAlerta("Cancelado", "El envío ha sido cancelado.");
     }
 
     private void limpiarCampos() {
         txtIdUsuario.clear();
         txtPeso.clear();
         txtVolumen.clear();
+        cbOrigen.getItems().clear();
+        cbDestino.getItems().clear();
         cbEstrategia.getSelectionModel().clearSelection();
         lblCostoTotal.setText("Costo total estimado: $");
         txtResumen.setText("Resumen del envío:");
-        chkSeguro.setSelected(false);
-        chkPrioridad.setSelected(false);
-        chkFirma.setSelected(false);
-        chkRastreo.setSelected(false);
-        chkNocturna.setSelected(false);
     }
 
     private void mostrarAlerta(String titulo, String mensaje) {
-        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-        alerta.setTitle(titulo);
-        alerta.setHeaderText(null);
-        alerta.setContentText(mensaje);
-        alerta.showAndWait();
+
+        Alert a = new Alert(Alert.AlertType.INFORMATION);
+        a.setTitle(titulo);
+        a.setHeaderText(null);
+        a.setContentText(mensaje);
+        a.show();
     }
 }
