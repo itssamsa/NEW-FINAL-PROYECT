@@ -12,34 +12,34 @@ public class PanelMetricasController {
 
     @FXML private BarChart<String, Number> bcServicios;
     @FXML private PieChart pcIngresos;
-    @FXML private Button btnActualizar; // botón para actualizar métricas
+    @FXML private PieChart pcIncidencias;
+    @FXML private Button btnActualizar;
 
     private final PanelMetricasInvoker invoker = new PanelMetricasInvoker();
 
     @FXML
     public void initialize() {
-        // Inicialmente mostramos los gráficos (posiblemente vacíos)
-        mostrarServiciosMasUsados();
-        mostrarIngresosPorPeriodo();
+        actualizarMetricas();
 
-        // Configurar botón para recargar métricas
         if (btnActualizar != null) {
             btnActualizar.setOnAction(event -> actualizarMetricas());
         }
     }
+
+    // ---------------- METRICAS ---------------- //
 
     private void mostrarServiciosMasUsados() {
         ComandoServiciosMasUsados comando = new ComandoServiciosMasUsados();
         invoker.setComando(comando);
         invoker.ejecutarComando();
 
-        bcServicios.getData().clear(); // Limpiar datos anteriores
+        bcServicios.getData().clear();
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         Map<ServicioAdicional, Integer> datos = comando.getResultados();
 
-        datos.forEach((servicio, cantidad) -> {
-            series.getData().add(new XYChart.Data<>(servicio.toString(), cantidad));
-        });
+        datos.forEach((servicio, cantidad) ->
+                series.getData().add(new XYChart.Data<>(servicio.toString(), cantidad))
+        );
 
         bcServicios.getData().add(series);
     }
@@ -49,17 +49,27 @@ public class PanelMetricasController {
         invoker.setComando(comando);
         invoker.ejecutarComando();
 
-        pcIngresos.getData().clear(); // Limpiar datos anteriores
-        Map<String, Double> datos = comando.getIngresosPorPeriodo();
-        datos.forEach((mes, ingreso) -> {
-            PieChart.Data slice = new PieChart.Data(mes, ingreso);
-            pcIngresos.getData().add(slice);
-        });
+        pcIngresos.getData().clear();
+        comando.getIngresosPorPeriodo().forEach((mes, ingreso) ->
+                pcIngresos.getData().add(new PieChart.Data(mes, ingreso))
+        );
     }
 
-    // Método público para recargar métricas en cualquier momento
+    private void mostrarIncidencias() {
+        ComandoIncidenciasPorZona comando = new ComandoIncidenciasPorZona();
+        invoker.setComando(comando);
+        invoker.ejecutarComando();
+
+        pcIncidencias.getData().clear();
+        comando.getResultados().forEach((tipo, cantidad) ->
+                pcIncidencias.getData().add(new PieChart.Data(tipo, cantidad))
+        );
+    }
+
+    // Método general para recargar todo
     public void actualizarMetricas() {
         mostrarServiciosMasUsados();
         mostrarIngresosPorPeriodo();
+        mostrarIncidencias();
     }
 }

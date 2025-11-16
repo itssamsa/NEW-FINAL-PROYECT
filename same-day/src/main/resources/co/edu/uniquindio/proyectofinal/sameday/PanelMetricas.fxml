@@ -7,22 +7,36 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 
-<VBox prefHeight="757.0" prefWidth="798.0" spacing="20" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.PanelMetricasController">
+<VBox prefHeight="850" prefWidth="820" spacing="20" style="-fx-padding: 20;"
+      xmlns="http://javafx.com/javafx/23.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.PanelMetricasController">
 
     <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Panel de Métricas" />
 
-    <!-- Botón para actualizar métricas -->
     <Button fx:id="btnActualizar" style="-fx-font-size: 14px;" text="Actualizar Métricas" />
 
-    <BarChart fx:id="bcServicios" prefHeight="300" title="Servicios Adicionales Más Usados">
-        <xAxis>
-            <CategoryAxis label="Servicio" prefHeight="41.0" prefWidth="680.0" />
-        </xAxis>
-        <yAxis>
-            <NumberAxis label="Cantidad" />
-        </yAxis>
-    </BarChart>
+    <!-- FILA SUPERIOR: Servicios (izquierda) + Incidencias (derecha) -->
+    <HBox spacing="40"> <!-- Espacio entre ambos gráficos -->
 
+        <!-- Servicios -->
+        <BarChart fx:id="bcServicios" prefHeight="250" prefWidth="380" title="Servicios Adicionales Más Usados">
+            <xAxis>
+                <CategoryAxis label="Servicio"/>
+            </xAxis>
+            <yAxis>
+                <NumberAxis label="Cantidad"/>
+            </yAxis>
+        </BarChart>
+
+        <!-- Incidencias -->
+        <PieChart fx:id="pcIncidencias" prefHeight="250" prefWidth="300" title="Incidencias de Envíos" />
+
+    </HBox>
+
+    <!-- FILA INFERIOR: Ingresos -->
     <PieChart fx:id="pcIngresos" prefHeight="300" title="Ingresos por Período" />
+
 </VBox>
