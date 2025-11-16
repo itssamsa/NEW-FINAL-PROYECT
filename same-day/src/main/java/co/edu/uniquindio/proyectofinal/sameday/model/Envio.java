@@ -64,13 +64,7 @@ public class Envio {
 
     @Override
     public String toString() {
-        return "Envio{" +
-                "idEnvio='" + idEnvio + '\'' +
-                ", origen=" + (origen != null ? origen.getCalle() : "No asignado") +
-                ", destino=" + (destino != null ? destino.getCalle() : "No asignado") +
-                ", estado=" + estado +
-                ", pagado=" + pagado +
-                '}';
+        return null;
     }
 
     public void setDistancia(double distancia) {

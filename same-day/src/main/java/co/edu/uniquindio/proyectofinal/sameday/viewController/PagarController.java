@@ -27,7 +27,6 @@ public class PagarController {
     public void initialize() {
         cbMetodoPago.getItems().addAll(MetodoPago.values());
 
-        // Cambiar automáticamente el destino según la dirección seleccionada
         cbDirecciones.setOnAction(event -> {
             Direccion seleccionada = cbDirecciones.getValue();
             if (seleccionada != null) {
@@ -36,32 +35,51 @@ public class PagarController {
         });
     }
 
+    // ---------------------------------------------------
+    // SE SETEAN ORIGEN Y DESTINO SEGÚN EL ENVÍO REAL
+    // ---------------------------------------------------
     public void setEnvio(Envio envio) {
         this.envio = envio;
+
         lblIdEnvio.setText("ID del Envío: " + envio.getIdEnvio());
         lblTotal.setText("Total a pagar: $" + envio.getCostoTotal());
         lblIdPago.setText("ID del Pago: " + generarIdPago());
 
         Usuario usuario = envio.getUsuario();
 
-        if (usuario != null && usuario.getDireccionesFrecuentes() != null && !usuario.getDireccionesFrecuentes().isEmpty()) {
-            cbDirecciones.getItems().addAll(usuario.getDireccionesFrecuentes());
-            cbDirecciones.setPromptText("Seleccione su dirección de entrega");
-
-            // Mostrar la primera como predeterminada
-            Direccion primera = usuario.getDireccionesFrecuentes().get(0);
-            cbDirecciones.setValue(primera);
+        // Mostrar ORIGEN y DESTINO del envío
+        if (envio.getOrigen() != null) {
+            txtOrigen.setText(envio.getOrigen().getCalle() + " - " + envio.getOrigen().getCiudad());
+        } else {
             txtOrigen.setText("");
-            txtDestino.setText(primera.getCalle() + " - " + primera.getCiudad());
+        }
+
+        if (envio.getDestino() != null) {
+            txtDestino.setText(envio.getDestino().getCalle() + " - " + envio.getDestino().getCiudad());
+        } else {
+            txtDestino.setText("");
+        }
+
+        // Llenar ComboBox de direcciones del usuario
+        if (usuario != null && usuario.getDireccionesFrecuentes() != null && !usuario.getDireccionesFrecuentes().isEmpty()) {
+
+            cbDirecciones.getItems().addAll(usuario.getDireccionesFrecuentes());
+            cbDirecciones.setPromptText("Seleccione su dirección guardada");
+
+            // Seleccionar automáticamente la dirección destino usada en el envío
+            Direccion destino = envio.getDestino();
+            if (destino != null) {
+                cbDirecciones.setValue(destino);
+            }
+
         } else {
             cbDirecciones.setPromptText("Sin direcciones registradas");
-            txtOrigen.setText("");
-            txtDestino.setText("");
         }
     }
 
     @FXML
     private void confirmarPago() {
+
         if (cbMetodoPago.getValue() == null || txtDestino.getText().isEmpty()) {
             mostrarAlerta("Error", "Debe completar todos los campos para continuar.");
             return;
@@ -75,12 +93,11 @@ public class PagarController {
         envio.setEstado(EstadoEnvio.SOLICITADO);
         envio.setPagado(true);
 
-        Direccion origen = new Direccion("D-ORIGEN", "Origen", txtOrigen.getText(), "Ciudad registrada", "0,0");
+        // ORIGEN Y DESTINO YA VIENEN DEL ENVÍO, NO SE CAMBIAN
         Direccion destino = cbDirecciones.getValue() != null
                 ? cbDirecciones.getValue()
-                : new Direccion("D-DESTINO", "Destino", txtDestino.getText(), "Ciudad registrada", "0,0");
+                : envio.getDestino();
 
-        envio.setOrigen(origen);
         envio.setDestino(destino);
 
         ModelFactory.getInstance().getEnvioService().actualizar(envio);
