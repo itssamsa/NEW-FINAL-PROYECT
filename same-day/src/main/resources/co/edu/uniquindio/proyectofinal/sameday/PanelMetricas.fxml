@@ -6,37 +6,36 @@
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 
-<VBox prefHeight="850" prefWidth="820" spacing="20" style="-fx-padding: 20;"
-      xmlns="http://javafx.com/javafx/23.0.1"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.PanelMetricasController">
+<AnchorPane prefHeight="741.0" prefWidth="1427.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.PanelMetricasController">
 
-    <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Panel de Métricas" />
+      <BarChart fx:id="bcServicios" layoutX="443.0" layoutY="66.0" prefHeight="245.0" prefWidth="432.0" title="Servicios Adicionales Más Usados">
+          <xAxis>
+              <CategoryAxis label="Servicio" />
+          </xAxis>
+          <yAxis>
+              <NumberAxis label="Cantidad" />
+          </yAxis>
+      </BarChart>
 
-    <Button fx:id="btnActualizar" style="-fx-font-size: 14px;" text="Actualizar Métricas" />
+     <Button fx:id="btnActualizar" layoutX="376.0" layoutY="14.0" style="-fx-background-color: #a6f5b9;" text="Actualizar Métricas">
+      <font>
+         <Font name="System Bold" size="13.0" />
+      </font>
+   </Button>
+      <PieChart fx:id="pcIncidencias" layoutX="932.0" layoutY="50.0" prefHeight="247.0" prefWidth="379.0" title="Incidencias de Envíos" />
+     <PieChart fx:id="pcIngresos" layoutX="366.0" layoutY="388.0" prefHeight="300" title="Ingresos por Período" />
+      <Label layoutX="980.0" layoutY="399.0" style="-fx-font-size: 14px; -fx-font-weight: bold;" text="Tiempo promedio de entrega:" />
+      <Label fx:id="lblTiempoPromedio" layoutX="1191.0" layoutY="399.0" style="-fx-font-size: 14px;" text="0 horas" />
+   <AnchorPane layoutY="-1.0" prefHeight="801.0" prefWidth="369.0" style="-fx-background-color: #50C878;">
+      <children>
+         <Circle fill="WHITE" layoutX="177.0" layoutY="339.0" radius="120.0" stroke="WHITE" strokeType="INSIDE" />
+      
+           <Label layoutX="102.0" layoutY="326.0" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Panel de Métricas" />
+      </children>
+   </AnchorPane>
 
-    <!-- FILA SUPERIOR: Servicios (izquierda) + Incidencias (derecha) -->
-    <HBox spacing="40"> <!-- Espacio entre ambos gráficos -->
-
-        <!-- Servicios -->
-        <BarChart fx:id="bcServicios" prefHeight="250" prefWidth="380" title="Servicios Adicionales Más Usados">
-            <xAxis>
-                <CategoryAxis label="Servicio"/>
-            </xAxis>
-            <yAxis>
-                <NumberAxis label="Cantidad"/>
-            </yAxis>
-        </BarChart>
-
-        <!-- Incidencias -->
-        <PieChart fx:id="pcIncidencias" prefHeight="250" prefWidth="300" title="Incidencias de Envíos" />
-
-    </HBox>
-
-    <!-- FILA INFERIOR: Ingresos -->
-    <PieChart fx:id="pcIngresos" prefHeight="300" title="Ingresos por Período" />
-
-</VBox>
+</AnchorPane>

@@ -1,51 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.MiEnvioController"
-            prefWidth="600" prefHeight="550">
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
 
-    <VBox spacing="12" alignment="TOP_CENTER" prefWidth="580"
-          AnchorPane.topAnchor="15" AnchorPane.leftAnchor="10">
+<AnchorPane prefHeight="741.0" prefWidth="1427.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.MiEnvioController">
 
-        <Label text="Buscar Envío" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+     <TextArea fx:id="txtInfoEnvio" editable="false" layoutX="543.0" layoutY="119.0" prefHeight="180" prefWidth="587.0" text="Información del envío aparecerá aquí." wrapText="true" />
+      <TextField fx:id="txtIdEnvio" layoutX="823.0" layoutY="68.0" prefWidth="120" style="-fx-background-color: #deffe7;" />
+      <Label layoutX="674.0" layoutY="72.0" text="ID del Envío:" />
+      <Button layoutX="979.0" layoutY="68.0" onAction="#buscarEnvio" style="-fx-background-color: #a6f5b9;" text="Buscar">
+      <font>
+         <Font name="Verdana Bold" size="12.0" />
+      </font>
+   </Button>
+      <Button layoutX="818.0" layoutY="609.0" onAction="#abrirVentanaListarPagos" prefWidth="130" style="-fx-background-color: #a6f5b9;" text="📅 Listar Pagos">
+      <font>
+         <Font name="Verdana Bold" size="12.0" />
+      </font>
+   </Button>
+      <Button layoutX="818.0" layoutY="540.0" onAction="#abrirVentanaListarEnvios" prefWidth="130" style="-fx-background-color: #a6f5b9;" text="📦 Listar Envíos">
+      <font>
+         <Font name="Verdana Bold" size="12.0" />
+      </font>
+   </Button>
 
-        <HBox spacing="10" alignment="CENTER">
-            <Label text="ID del Envío:"/>
-            <TextField fx:id="txtIdEnvio" promptText="Ej: 1234" prefWidth="120"/>
-            <Button text="Buscar" onAction="#buscarEnvio"/>
-        </HBox>
-
-        <Separator/>
-
-        <TextArea fx:id="txtInfoEnvio" prefWidth="500" prefHeight="180"
-                  editable="false" wrapText="true"
-                  text="Información del envío aparecerá aquí."/>
-
-        <HBox spacing="10" alignment="CENTER">
-            <Button text="Rastrear" prefWidth="110"/>
-            <Button text="Cancelar" prefWidth="110" onAction="#cancelarEnvio"/>
-            <Button text="🧾 Comprobante" prefWidth="130" onAction="#mostrarComprobantePago"/>
-            <Button text="📅 Listar Pagos" prefWidth="130" onAction="#abrirVentanaListarPagos"/>
-            <Button text="📦 Listar Envíos" prefWidth="130" onAction="#abrirVentanaListarEnvios"/>
-        </HBox>
-
-        <Separator/>
-
-        <HBox spacing="10" alignment="CENTER">
-            <ComboBox fx:id="cbFormatoReporte" prefWidth="120" promptText="Formato"/>
-            <Button text="Generar Reporte" prefWidth="150" onAction="#generarReporte"/>
-        </HBox>
-
-        <Separator/>
-
-        <Button text="💳 Pagar Envío"
-                style="-fx-font-size: 16px; -fx-font-weight: bold;"
-                onAction="#abrirVentanaPago" prefWidth="200"/>
-
-    </VBox>
+     <Button layoutX="783.0" layoutY="381.0" onAction="#abrirVentanaPago" prefWidth="200" style="-fx-background-color: #a6f5b9; -fx-font-weight: bold;" text="💳 Pagar Envío" />
+      <Button layoutX="1195.0" layoutY="197.0" onAction="#generarReporte" prefWidth="150" style="-fx-background-color: #a6f5b9;" text="Generar Reporte">
+      <font>
+         <Font name="Verdana Bold" size="12.0" />
+      </font>
+   </Button>
+      <ComboBox fx:id="cbFormatoReporte" layoutX="1209.0" layoutY="142.0" prefWidth="120" promptText="Formato" style="-fx-background-color: #a6f5b9;" />
+      <Button layoutX="818.0" layoutY="443.0" onAction="#mostrarComprobantePago" prefWidth="130" style="-fx-background-color: #a6f5b9;" text="Comprobante">
+      <font>
+         <Font name="Verdana Bold" size="12.0" />
+      </font>
+   </Button>
+      <Button layoutX="1020.0" layoutY="315.0" onAction="#cancelarEnvio" prefWidth="110" style="-fx-background-color: #a6f5b9;" text="Cancelar">
+      <font>
+         <Font name="Verdana Bold" size="12.0" />
+      </font>
+   </Button>
+   <AnchorPane layoutX="-4.0" prefHeight="761.0" prefWidth="375.0" style="-fx-background-color: #50C878;">
+      <children>
+         <Circle fill="WHITE" layoutX="181.0" layoutY="365.0" radius="120.0" stroke="WHITE" strokeType="INSIDE" />
+      
+           <Label layoutX="140.0" layoutY="350.0" style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Mi Envío" />
+      </children>
+   </AnchorPane>
+   <Line endX="612.0" layoutX="720.0" layoutY="360.0" startX="-256.0" stroke="#a6f5b9" />
+   <Line endX="627.0" layoutX="704.0" layoutY="506.0" startX="-241.0" stroke="#a6f5b9" />
 
 </AnchorPane>
-

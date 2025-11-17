@@ -5,7 +5,7 @@ import co.edu.uniquindio.proyectofinal.sameday.model.Usuario;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+
 
 public class UsuarioBuilder {
     private String idUsuario;

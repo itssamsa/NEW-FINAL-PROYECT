@@ -42,9 +42,6 @@ public class EnvioController {
         txtResumen.setText("Resumen del envío:");
     }
 
-    // ---------------------------------------------------------
-    // Cargar direcciones del usuario
-    // ---------------------------------------------------------
     @FXML
     private void cargarDireccionesUsuario() {
 
@@ -70,9 +67,9 @@ public class EnvioController {
         cbDestino.getItems().addAll(usuarioActual.getDireccionesFrecuentes());
     }
 
-    // ---------------------------------------------------------
-    // Parsear coordenadas flexible (1 o 2 números)
-    // ---------------------------------------------------------
+    //OJO CON COORDENADAS
+
+
     private double[] parsearCoordenadas(Direccion d) {
 
         if (d == null || d.getCoordenadas() == null || d.getCoordenadas().trim().isEmpty()) {
@@ -80,15 +77,9 @@ public class EnvioController {
         }
 
         String raw = d.getCoordenadas().trim();
-
-        // 1. Reemplazar guion por separador
         raw = raw.replace("-", " ");
-
-        // 2. Convertir múltiples espacios en uno
         raw = raw.replaceAll("\\s+", " ");
-
         String[] parts;
-
         if (raw.contains(",")) {
             parts = raw.split(",");
         } else {
@@ -98,7 +89,7 @@ public class EnvioController {
         double lat, lon;
 
         if (parts.length == 1) {
-            // Solo un número: usar ese valor como latitud, longitud = 0
+
             lat = Double.parseDouble(parts[0].trim());
             lon = 0;
         } else {
@@ -108,10 +99,6 @@ public class EnvioController {
 
         return new double[]{lat, lon};
     }
-
-    // ---------------------------------------------------------
-    // Calcular distancia robusta
-    // ---------------------------------------------------------
     private double calcularDistancia(Direccion d1, Direccion d2) {
 
         double[] c1 = parsearCoordenadas(d1);
@@ -123,9 +110,7 @@ public class EnvioController {
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
 
-    // ---------------------------------------------------------
-    // Calcular tarifa
-    // ---------------------------------------------------------
+    //TARIFAS
     @FXML
     private void calcularTarifa() {
         try {
@@ -186,7 +171,7 @@ public class EnvioController {
                 costoAdicional += 4.0;
             }
 
-            // Estrategia
+            // Strategy
             EstrategiaTarifa estrategia;
 
             switch (cbEstrategia.getValue()) {
@@ -225,9 +210,6 @@ public class EnvioController {
         }
     }
 
-    // ---------------------------------------------------------
-    // Confirmar envío
-    // ---------------------------------------------------------
     @FXML
     private void confirmarEnvio() {
 

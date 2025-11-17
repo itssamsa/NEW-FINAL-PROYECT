@@ -20,18 +20,17 @@ public class MisDireccionesController {
     @FXML private TextField txtCalle;
     @FXML private TextField txtCiudad;
     @FXML private TextField txtCoordenadas;
-    @FXML private TextField txtIdUsuario; // ← NUEVO campo para buscar por ID
+    @FXML private TextField txtIdUsuario;
 
     private ObservableList<Direccion> listaDirecciones;
     private Direccion direccionSeleccionada;
     private final ModelFactory modelFactory = ModelFactory.getInstance();
-    private Usuario usuarioActual; // ← Guardará el usuario encontrado por ID
+    private Usuario usuarioActual;
 
     @FXML
     public void initialize() {
         configurarTabla();
 
-        // Escucha la selección de filas
         tablaDirecciones.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
             direccionSeleccionada = newSel;
             if (newSel != null) {
@@ -146,6 +145,17 @@ public class MisDireccionesController {
     }
 
     @FXML
+    public void actualizarTablaDirecciones() {
+        if (usuarioActual == null) {
+            mostrarAlerta("Error", "Debe buscar un usuario antes de actualizar la tabla.");
+            return;
+        }
+
+        cargarDirecciones(usuarioActual);
+        mostrarAlerta("Información", "Tabla actualizada.");
+    }
+
+    @FXML
     public void limpiarCampos() {
         txtAlias.clear();
         txtCalle.clear();
@@ -167,4 +177,3 @@ public class MisDireccionesController {
         alerta.showAndWait();
     }
 }
-

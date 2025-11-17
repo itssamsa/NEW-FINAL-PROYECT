@@ -1,64 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.MisDireccionesController"
-            prefWidth="700" prefHeight="500">
+<AnchorPane prefHeight="741.0" prefWidth="1427.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.MisDireccionesController">
 
-    <center>
-        <VBox spacing="10" alignment="CENTER">
-            <padding>
-                <Insets top="15" right="15" bottom="15" left="15"/>
-            </padding>
+    <children>
+          <TextField fx:id="txtIdUsuario" layoutX="714.0" layoutY="42.0" prefWidth="150" style="-fx-background-color: #deffe7;" />
+          <Label layoutX="626.0" layoutY="46.0" text="ID Usuario:" />
+          <Button layoutX="906.0" layoutY="42.0" onAction="#buscarUsuarioPorId" style="-fx-background-color: #a6f5b9;" text="Buscar">
+         <font>
+            <Font name="Verdana Bold" size="12.0" />
+         </font>
+      </Button>
+          <Button fx:id="btnActualizarTabla" layoutX="1078.0" layoutY="352.0" onAction="#actualizarTablaDirecciones" style="-fx-background-color: #a6f5b9;" text="🔄 Actualizar">
+         <font>
+            <Font name="Verdana Bold" size="12.0" />
+         </font>
+      </Button>
 
-            <Label text="Mis Direcciones" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
 
-            <!-- Campo para ingresar ID de usuario y botón de búsqueda -->
-            <HBox spacing="10" alignment="CENTER">
-                <Label text="ID Usuario:"/>
-                <TextField fx:id="txtIdUsuario" prefWidth="150"/>
-                <Button text="Buscar" onAction="#buscarUsuarioPorId"/>
-            </HBox>
+         <TableView fx:id="tablaDirecciones" layoutX="531.0" layoutY="396.0" prefHeight="273.0" prefWidth="647.0">
+             <columns>
+                 <TableColumn fx:id="colAlias" prefWidth="142.0" style="-fx-background-color: #deffe7;" text="Alias" />
+                 <TableColumn fx:id="colCalle" prefWidth="178.0" style="-fx-background-color: #deffe7;" text="Calle" />
+                 <TableColumn fx:id="colCiudad" prefWidth="159.0" style="-fx-background-color: #deffe7;" text="Ciudad" />
+                 <TableColumn fx:id="colCoordenadas" prefWidth="167.0" style="-fx-background-color: #deffe7;" text="Coordenadas" />
+             </columns>
+         </TableView>
+          <Button fx:id="btnEliminar" layoutX="760.0" layoutY="248.0" onAction="#eliminarDireccion" style="-fx-background-color: #a6f5b9;" text="Eliminar">
+         <font>
+            <Font name="Verdana Bold" size="12.0" />
+         </font>
+      </Button>
+          <Button fx:id="btnActualizar" layoutX="598.0" layoutY="248.0" onAction="#actualizarDireccion" style="-fx-background-color: #a6f5b9;" text="Actualizar">
+         <font>
+            <Font name="Verdana Bold" size="12.0" />
+         </font>
+      </Button>
+          <Button fx:id="btnLimpiar" layoutX="1072.0" layoutY="248.0" onAction="#limpiarCampos" style="-fx-background-color: #a6f5b9;" text="Limpiar">
+         <font>
+            <Font name="Verdana Bold" size="12.0" />
+         </font>
+      </Button>
+          <Button fx:id="btnAgregar" layoutX="915.0" layoutY="248.0" onAction="#agregarDireccion" style="-fx-background-color: #a6f5b9;" text="Agregar">
+         <font>
+            <Font name="Verdana Bold" size="12.0" />
+         </font>
+      </Button>
+          <TextField fx:id="txtAlias" layoutX="979.0" layoutY="120.0" style="-fx-background-color: deffe7;" />
+          <TextField fx:id="txtCalle" layoutX="623.0" layoutY="120.0" style="-fx-background-color: #deffe7;" />
+          <TextField fx:id="txtCiudad" layoutX="623.0" layoutY="181.0" style="-fx-background-color: #deffe7;" />
+          <TextField fx:id="txtCoordenadas" layoutX="979.0" layoutY="181.0" style="-fx-background-color: deffe7;" />
 
-            <!-- Tabla de direcciones -->
-            <TableView fx:id="tablaDirecciones" prefHeight="250" prefWidth="650">
-                <columns>
-                    <TableColumn fx:id="colAlias" text="Alias" prefWidth="120"/>
-                    <TableColumn fx:id="colCalle" text="Calle" prefWidth="200"/>
-                    <TableColumn fx:id="colCiudad" text="Ciudad" prefWidth="150"/>
-                    <TableColumn fx:id="colCoordenadas" text="Coordenadas" prefWidth="150"/>
-                </columns>
-            </TableView>
+          <Label layoutX="542.0" layoutY="124.0" text="Alias:" />
 
-            <!-- Campos de entrada -->
-            <GridPane hgap="10" vgap="10">
-                <padding>
-                    <Insets top="10" right="10" bottom="10" left="10"/>
-                </padding>
+          <Label layoutX="542.0" layoutY="185.0" text="Calle:" />
 
-                <Label text="Alias:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                <TextField fx:id="txtAlias" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+          <Label layoutX="871.0" layoutY="124.0" text="Ciudad:" />
 
-                <Label text="Calle:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                <TextField fx:id="txtCalle" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+          <Label layoutX="871.0" layoutY="185.0" text="Coordenadas:" />
+      <AnchorPane prefHeight="806.0" prefWidth="421.0" style="-fx-background-color: #50C878;">
+         <children>
+            <Circle fill="WHITE" layoutX="196.0" layoutY="339.0" radius="120.0" stroke="WHITE" strokeType="INSIDE" />
+      
+               <Label layoutX="125.0" layoutY="320.0" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Mis Direcciones" />
+         </children>
+      </AnchorPane>
+      <Line endX="603.0" layoutX="590.0" layoutY="326.0" startX="-100.0" stroke="#a6f5b9" />
 
-                <Label text="Ciudad:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                <TextField fx:id="txtCiudad" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+    </children>
 
-                <Label text="Coordenadas:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-                <TextField fx:id="txtCoordenadas" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-            </GridPane>
-
-            <!-- Botones de acción -->
-            <HBox spacing="15" alignment="CENTER">
-                <Button text="Agregar" fx:id="btnAgregar" onAction="#agregarDireccion"/>
-                <Button text="Actualizar" fx:id="btnActualizar" onAction="#actualizarDireccion"/>
-                <Button text="Eliminar" fx:id="btnEliminar" onAction="#eliminarDireccion"/>
-                <Button text="Limpiar" fx:id="btnLimpiar" onAction="#limpiarCampos"/>
-            </HBox>
-        </VBox>
-    </center>
-</BorderPane>
+</AnchorPane>

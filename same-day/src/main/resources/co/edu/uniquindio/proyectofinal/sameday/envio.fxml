@@ -7,54 +7,77 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="650" prefWidth="820"
-            style="-fx-background-color: #f9f9f9; -fx-padding: 20;"
-            xmlns="http://javafx.com/javafx/23.0.1"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.EnvioController">
+<AnchorPane prefHeight="741.0" prefWidth="1427.0" style="-fx-background-color: #f9f9f9; -fx-padding: 20;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.EnvioController">
 
-    <Label layoutX="300" layoutY="20"
-           style="-fx-font-size: 20px; -fx-font-weight: bold;"
-           text="Gestión de Envíos" />
+    <Label layoutX="474.0" layoutY="48.0" text="ID Usuario:" />
+    <TextField fx:id="txtIdUsuario" layoutX="587.0" layoutY="44.0" prefWidth="200" promptText="Ej: U-12345" />
+    <Button layoutX="842.0" layoutY="44.0" onAction="#cargarDireccionesUsuario" prefHeight="23.0" prefWidth="150.0" style="-fx-background-color: #a6f5b9;" text="Cargar direcciones">
+      <font>
+         <Font name="Verdana Bold" size="12.0" />
+      </font></Button>
 
-    <Label layoutX="50" layoutY="70" text="ID Usuario:" />
-    <TextField fx:id="txtIdUsuario" layoutX="150" layoutY="65" prefWidth="200" promptText="Ej: U-12345" />
-    <Button layoutX="370" layoutY="65" prefWidth="120" text="Cargar direcciones" onAction="#cargarDireccionesUsuario"/>
+    <Label layoutX="474.0" layoutY="99.0" text="Origen:" />
+    <ComboBox fx:id="cbOrigen" layoutX="574.0" layoutY="95.0" prefWidth="260" style="-fx-background-color: #deffe7;" />
 
-    <Label layoutX="50" layoutY="120" text="Origen:" />
-    <ComboBox fx:id="cbOrigen" layoutX="150" layoutY="115" prefWidth="260"/>
+    <Label layoutX="472.0" layoutY="144.0" prefHeight="17.0" prefWidth="44.0" text="Destino:" />
+    <ComboBox fx:id="cbDestino" layoutX="574.0" layoutY="140.0" prefWidth="260" style="-fx-background-color: #deffe7;" />
 
-    <Label layoutX="50" layoutY="170" text="Destino:" />
-    <ComboBox fx:id="cbDestino" layoutX="150" layoutY="165" prefWidth="260"/>
+    <Label layoutX="1045.0" layoutY="48.0" text="Peso (kg):" />
+    <TextField fx:id="txtPeso" layoutX="1177.0" layoutY="44.0" prefWidth="100" />
 
-    <Label layoutX="50" layoutY="220" text="Peso (kg):" />
-    <TextField fx:id="txtPeso" layoutX="150" layoutY="215" prefWidth="100" />
+    <Label layoutX="1044.0" layoutY="99.0" text="Volumen (m³):" />
+    <TextField fx:id="txtVolumen" layoutX="1177.0" layoutY="95.0" prefWidth="100" />
 
-    <Label layoutX="300" layoutY="220" text="Volumen (m³):" />
-    <TextField fx:id="txtVolumen" layoutX="420" layoutY="215" prefWidth="100" />
+    <Label layoutX="941.0" layoutY="144.0" text="Tipo de cálculo:" />
+    <ComboBox fx:id="cbEstrategia" layoutX="1046.0" layoutY="140.0" prefWidth="250" style="-fx-background-color: #deffe7;" />
 
-    <Label layoutX="50" layoutY="270" text="Tipo de cálculo:" />
-    <ComboBox fx:id="cbEstrategia" layoutX="170" layoutY="265" prefWidth="250" />
+    <Label layoutX="597.0" layoutY="194.0" style="-fx-font-weight: bold;" text="Servicios adicionales:" />
+    <CheckBox fx:id="chkSeguro" layoutX="503.0" layoutY="247.0" text="Seguro" />
+    <CheckBox fx:id="chkPrioridad" layoutX="691.0" layoutY="247.0" text="Prioritario" />
+    <CheckBox fx:id="chkFirma" layoutX="691.0" layoutY="299.0" text="Firma requerida" />
+    <CheckBox fx:id="chkFragil" layoutX="500.0" layoutY="299.0" prefHeight="17.0" prefWidth="66.0" text="Frágil" />
 
-    <Label layoutX="50" layoutY="320" style="-fx-font-weight: bold;" text="Servicios adicionales:" />
-    <CheckBox fx:id="chkSeguro" layoutX="50" layoutY="350" text="Seguro" />
-    <CheckBox fx:id="chkPrioridad" layoutX="180" layoutY="350" text="Prioritario" />
-    <CheckBox fx:id="chkFirma" layoutX="320" layoutY="350" text="Firma requerida" />
-    <CheckBox fx:id="chkFragil" layoutX="485" layoutY="350" text="Frágil" />
+    <Label layoutX="1061.0" layoutY="194.0" style="-fx-font-weight: bold;" text="Características opcionales:" />
+    <CheckBox fx:id="chkRastreo" layoutX="1079.0" layoutY="247.0" text="Rastreo premium" />
+    <CheckBox fx:id="chkNocturna" layoutX="1082.0" layoutY="299.0" text="Entrega nocturna" />
 
-    <Label layoutX="50" layoutY="390" style="-fx-font-weight: bold;" text="Características opcionales:" />
-    <CheckBox fx:id="chkRastreo" layoutX="50" layoutY="420" text="Rastreo premium" />
-    <CheckBox fx:id="chkNocturna" layoutX="230" layoutY="420" text="Entrega nocturna" />
+    <Button layoutX="522.0" layoutY="487.0" onAction="#calcularTarifa" prefWidth="150" style="-fx-background-color: #a6f5b9;" text="Calcular tarifa">
+      <font>
+         <Font name="Verdana Bold" size="12.0" />
+      </font></Button>
+    <Button layoutX="522.0" layoutY="530.0" onAction="#confirmarEnvio" prefWidth="150" style="-fx-background-color: #a6f5b9;" text="Confirmar envío">
+      <font>
+         <Font name="Verdana Bold" size="12.0" />
+      </font></Button>
+    <Button layoutX="522.0" layoutY="581.0" onAction="#cancelarEnvio" prefWidth="150" style="-fx-background-color: #a6f5b9;" text="Cancelar">
+      <font>
+         <Font name="Verdana Bold" size="12.0" />
+      </font></Button>
 
-    <Button layoutX="70" layoutY="470" onAction="#calcularTarifa" prefWidth="150" text="Calcular tarifa" />
-    <Button layoutX="260" layoutY="470" onAction="#confirmarEnvio" prefWidth="150" text="Confirmar envío" />
-    <Button layoutX="450" layoutY="470" onAction="#cancelarEnvio" prefWidth="150" text="Cancelar" />
+    <Label layoutX="744.0" layoutY="386.0" prefHeight="25.0" prefWidth="327.0" style="-fx-font-weight: bold;" text="Costo total:" />
+    <Label fx:id="lblCostoTotal" layoutX="908.0" layoutY="390.0" text="Costo total estimado: $" />
 
-    <Label layoutX="50" layoutY="520" style="-fx-font-weight: bold;" text="Costo total:" />
-    <Label fx:id="lblCostoTotal" layoutX="150" layoutY="520" text="Costo total estimado: $" />
-
-    <Label layoutX="50" layoutY="550" style="-fx-font-weight: bold;" text="Resumen del envío:" />
-    <TextArea fx:id="txtResumen" layoutX="50" layoutY="580" prefHeight="121" prefWidth="700" wrapText="true" />
+    <Label layoutX="847.0" layoutY="347.0" style="-fx-font-weight: bold;" text="Resumen del envío:">
+      <font>
+         <Font size="14.0" />
+      </font></Label>
+    <TextArea fx:id="txtResumen" layoutX="704.0" layoutY="432.0" prefHeight="219.0" prefWidth="473.0" wrapText="true" />
+   <AnchorPane prefHeight="741.0" prefWidth="415.0" style="-fx-background-color: #50C878;">
+      <children>
+         <Circle fill="WHITE" layoutX="196.0" layoutY="339.0" radius="120.0" stroke="WHITE" strokeType="INSIDE" />
+      
+          <Label layoutX="113.0" layoutY="324.0" style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Gestión de Envíos">
+            <font>
+               <Font name="Verdana Bold" size="12.0" />
+            </font>
+         </Label>
+      </children>
+   </AnchorPane>
+   <Line endX="695.0" layoutX="604.0" layoutY="339.0" startX="-122.0" stroke="#a6f5b9" />
+   <Line endX="661.0" layoutX="633.0" layoutY="184.0" startX="-155.0" stroke="#a6f5b9" />
 
 </AnchorPane>

@@ -15,7 +15,7 @@ public class ComandoServiciosMasUsados implements ComandoMetrica {
     @Override
     public void ejecutar() {
         resultados = new HashMap<>();
-        List<Envio> envios = ModelFactory.getInstance().getEnvioService().listar(); // método correcto
+        List<Envio> envios = ModelFactory.getInstance().getEnvioService().listar();
         for (Envio e : envios) {
             for (ServicioAdicional s : e.getServiciosAdicionales()) {
                 resultados.put(s, resultados.getOrDefault(s, 0) + 1);

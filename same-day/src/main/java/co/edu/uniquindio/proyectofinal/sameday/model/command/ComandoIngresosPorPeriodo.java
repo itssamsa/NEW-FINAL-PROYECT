@@ -14,9 +14,9 @@ public class ComandoIngresosPorPeriodo implements ComandoMetrica {
     @Override
     public void ejecutar() {
         ingresosPorPeriodo = new HashMap<>();
-        List<Envio> envios = ModelFactory.getInstance().getEnvioService().listar(); // método correcto
+        List<Envio> envios = ModelFactory.getInstance().getEnvioService().listar();
         for (Envio e : envios) {
-            String mes = e.getFechaCreacion().getMonth().toString(); // agrupado por mes
+            String mes = e.getFechaCreacion().getMonth().toString();
             ingresosPorPeriodo.put(mes, ingresosPorPeriodo.getOrDefault(mes, 0.0) + e.getCostoTotal());
         }
     }

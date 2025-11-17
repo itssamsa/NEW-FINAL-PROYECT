@@ -35,9 +35,6 @@ public class PagarController {
         });
     }
 
-    // ---------------------------------------------------
-    // SE SETEAN ORIGEN Y DESTINO SEGÚN EL ENVÍO REAL
-    // ---------------------------------------------------
     public void setEnvio(Envio envio) {
         this.envio = envio;
 
@@ -47,7 +44,6 @@ public class PagarController {
 
         Usuario usuario = envio.getUsuario();
 
-        // Mostrar ORIGEN y DESTINO del envío
         if (envio.getOrigen() != null) {
             txtOrigen.setText(envio.getOrigen().getCalle() + " - " + envio.getOrigen().getCiudad());
         } else {
@@ -60,13 +56,11 @@ public class PagarController {
             txtDestino.setText("");
         }
 
-        // Llenar ComboBox de direcciones del usuario
+
         if (usuario != null && usuario.getDireccionesFrecuentes() != null && !usuario.getDireccionesFrecuentes().isEmpty()) {
 
             cbDirecciones.getItems().addAll(usuario.getDireccionesFrecuentes());
             cbDirecciones.setPromptText("Seleccione su dirección guardada");
-
-            // Seleccionar automáticamente la dirección destino usada en el envío
             Direccion destino = envio.getDestino();
             if (destino != null) {
                 cbDirecciones.setValue(destino);
@@ -93,7 +87,6 @@ public class PagarController {
         envio.setEstado(EstadoEnvio.SOLICITADO);
         envio.setPagado(true);
 
-        // ORIGEN Y DESTINO YA VIENEN DEL ENVÍO, NO SE CAMBIAN
         Direccion destino = cbDirecciones.getValue() != null
                 ? cbDirecciones.getValue()
                 : envio.getDestino();

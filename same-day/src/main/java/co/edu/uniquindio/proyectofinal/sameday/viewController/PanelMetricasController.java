@@ -5,6 +5,7 @@ import co.edu.uniquindio.proyectofinal.sameday.model.enums.ServicioAdicional;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 
 import java.util.Map;
 
@@ -13,6 +14,7 @@ public class PanelMetricasController {
     @FXML private BarChart<String, Number> bcServicios;
     @FXML private PieChart pcIngresos;
     @FXML private PieChart pcIncidencias;
+    @FXML private Label lblTiempoPromedio;
     @FXML private Button btnActualizar;
 
     private final PanelMetricasInvoker invoker = new PanelMetricasInvoker();
@@ -25,8 +27,6 @@ public class PanelMetricasController {
             btnActualizar.setOnAction(event -> actualizarMetricas());
         }
     }
-
-    // ---------------- METRICAS ---------------- //
 
     private void mostrarServiciosMasUsados() {
         ComandoServiciosMasUsados comando = new ComandoServiciosMasUsados();
@@ -66,10 +66,22 @@ public class PanelMetricasController {
         );
     }
 
-    // Método general para recargar todo
+    private void mostrarTiempoPromedio() {
+        ComandoTiempoPromedio comando = new ComandoTiempoPromedio();
+        invoker.setComando(comando);
+        invoker.ejecutarComando();
+
+        double horas = comando.getTiempoPromedioHoras();
+
+        if (lblTiempoPromedio != null) {
+            lblTiempoPromedio.setText(String.format("%.2f horas", horas));
+        }
+    }
+
     public void actualizarMetricas() {
         mostrarServiciosMasUsados();
         mostrarIngresosPorPeriodo();
         mostrarIncidencias();
+        mostrarTiempoPromedio();
     }
 }

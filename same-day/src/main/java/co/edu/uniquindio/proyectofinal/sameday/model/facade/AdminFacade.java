@@ -19,7 +19,6 @@ public class AdminFacade {
         this.modelFactory = ModelFactory.getInstance();
     }
 
-    // --- Usuarios ---
     public void crearUsuario(String nombre, String correo, String telefono, String cedula, String direccion) {
         Direccion dir = new Direccion("D-" + cedula, "Casa", direccion, "Ciudad", "0,0");
         Usuario usuario = new UsuarioBuilder()
@@ -52,7 +51,6 @@ public class AdminFacade {
         return modelFactory.getUsuarioService().listarTodos();
     }
 
-    // --- Repartidores ---
     public void crearRepartidor(String id, String nombre, String documento, String telefono, EstadoRepartidor estado, String zona) {
         Repartidor r = new Repartidor(id, nombre, documento, telefono, estado, zona);
         modelFactory.getRepartidorService().crear(r);
@@ -80,13 +78,14 @@ public class AdminFacade {
         modelFactory.getRepartidorService().actualizar(r);
     }
 
-    // --- Envíos ---
+
     public List<Envio> listarEnviosPorEstado(EstadoEnvio estado) {
-        // Usamos directamente el método del service
         return modelFactory.getEnvioService().listarPorEstado(estado);
     }
 
     public boolean asignarRepartidorAEnvio(Envio envio, Repartidor repartidor) {
         return modelFactory.getEnvioService().asignarRepartidor(envio.getIdEnvio(), repartidor);
     }
+
+
 }

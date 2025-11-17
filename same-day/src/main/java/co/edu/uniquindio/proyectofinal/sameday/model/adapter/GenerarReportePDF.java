@@ -15,10 +15,10 @@ public class GenerarReportePDF implements GenerarReporte {
         System.out.println("📄 Generando reporte PDF en: " + rutaSalida);
 
         try {
-            // Crear contenido del PDF
+
             VBox contenido = crearContenidoPDF(listaEnvios);
 
-            // Generar PDF usando JavaFX Print API
+
             boolean exito = generarPDF(contenido);
 
             if (exito) {
@@ -29,7 +29,7 @@ public class GenerarReportePDF implements GenerarReporte {
 
         } catch (Exception e) {
             System.err.println("❌ Error generando PDF: " + e.getMessage());
-            // Fallback: mostrar información en consola
+
             mostrarEnConsola(listaEnvios);
         }
     }
@@ -38,23 +38,22 @@ public class GenerarReportePDF implements GenerarReporte {
         VBox contenido = new VBox(15);
         contenido.setStyle("-fx-padding: 30; -fx-background-color: white;");
 
-        // Título principal
         Label titulo = new Label("REPORTE DE ENVÍOS - SAME DAY");
         titulo.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
-        // Información del reporte
+
         Label info = new Label("Total de envíos: " + listaEnvios.size() +
                 " | Fecha: " + java.time.LocalDate.now());
         info.setStyle("-fx-font-size: 12px; -fx-text-fill: #7f8c8d;");
 
         contenido.getChildren().addAll(titulo, info);
 
-        // Agregar línea separadora
+
         Label separador = new Label("────────────────────────────────────────");
         separador.setStyle("-fx-text-fill: #bdc3c7;");
         contenido.getChildren().add(separador);
 
-        // Agregar cada envío
+
         for (Envio envio : listaEnvios) {
             String textoEnvio = String.format("📦 %s | 👤 %s | 📍 %s",
                     envio.getIdEnvio(),
@@ -75,11 +74,11 @@ public class GenerarReportePDF implements GenerarReporte {
             PrinterJob job = PrinterJob.createPrinterJob();
 
             if (job != null) {
-                // Mostrar diálogo de impresión
+
                 boolean proceder = job.showPrintDialog(null);
 
                 if (proceder) {
-                    // Intentar imprimir (esto abrirá el guardado como PDF)
+
                     boolean exito = job.printPage(contenido);
                     if (exito) {
                         job.endJob();

@@ -17,16 +17,13 @@ import java.util.stream.Collectors;
 
 public class AdminController {
 
-    // --- Facade ---
     private final AdminFacade adminFacade = new AdminFacade();
 
-    // --- Paneles ---
     @FXML private VBox panelUsuarios;
     @FXML private VBox panelRepartidores;
     @FXML private VBox panelAsignacion;
 
 
-    // --- Campos Usuarios ---
     @FXML private TextField txtNombre;
     @FXML private TextField txtCorreo;
     @FXML private TextField txtTelefono;
@@ -40,10 +37,10 @@ public class AdminController {
     @FXML private TableColumn<Usuario, String> colDireccion;
     @FXML private Button btnRefrescarUsuarios;
 
+
     private ObservableList<Usuario> listaUsuarios;
     private Usuario usuarioSeleccionado;
 
-    // --- Campos Repartidores ---
     @FXML private TextField txtId;
     @FXML private TextField txtNombreR;
     @FXML private TextField txtDocumento;
@@ -64,15 +61,18 @@ public class AdminController {
     private ObservableList<Repartidor> listaRepartidores;
     private Repartidor repartidorSeleccionado;
 
-    // --- Campos Asignación ---
     @FXML private ComboBox<Envio> cbEnvios;
     @FXML private ComboBox<Repartidor> cbRepartidores;
     @FXML private Button btnAsignar;
+    @FXML private TableView<Envio> tablaEnviosAsignacion;
+    @FXML private TableColumn<Envio, String> colEnvioIdAsignacion;
+    @FXML private TableColumn<Envio, String> colEnvioEstadoAsignacion;
+
 
     private ObservableList<Envio> listaEnvios;
     private ObservableList<Repartidor> listaRepartidoresActivos;
 
-    // --- Inicialización ---
+
     @FXML
     public void initialize() {
         cbEstado.getItems().addAll(EstadoRepartidor.values());
@@ -84,8 +84,9 @@ public class AdminController {
         cargarRepartidores();
 
         cargarEnvios();
+        configurarTablaEnviosAsignacion();
 
-        // Selección tabla usuarios
+
         tablaUsuarios.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             usuarioSeleccionado = newVal;
             if (newVal != null) {
@@ -97,7 +98,7 @@ public class AdminController {
             }
         });
 
-        // Selección tabla repartidores
+
         tablaRepartidores.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             repartidorSeleccionado = newVal;
             if (newVal != null) {
@@ -110,11 +111,10 @@ public class AdminController {
             }
         });
 
-        // Botón asignar repartidor a envío
         btnAsignar.setOnAction(e -> asignarRepartidorAEnvio());
     }
 
-    // --- Métodos para alternar paneles ---
+    //paneles
     @FXML
     private void mostrarUsuarios() {
         panelUsuarios.setVisible(true);
@@ -139,7 +139,7 @@ public class AdminController {
         cargarRepartidoresActivos();
     }
 
-    // --- CRUD Usuarios ---
+    // parte usuarios
     @FXML private void registrarUsuario() {
         if (camposVaciosUsuario()) {
             mostrarAlerta("Error", "Todos los campos son obligatorios.");
@@ -220,7 +220,7 @@ public class AdminController {
         tablaUsuarios.refresh();
     }
 
-    // --- CRUD Repartidores ---
+    // parte de repartidores
     @FXML private void registrarRepartidor() {
         if (camposVaciosRepartidor()) {
             mostrarAlerta("Error", "Todos los campos son obligatorios.");
@@ -297,7 +297,7 @@ public class AdminController {
     }
 
 
-    // --- Gestión Asignación de Envíos ---
+    //parte de asignacion
     private void cargarEnvios() {
         List<Envio> enviosSolicitados = adminFacade.listarEnviosPorEstado(EstadoEnvio.SOLICITADO);
         listaEnvios = FXCollections.observableArrayList(enviosSolicitados);
@@ -311,6 +311,16 @@ public class AdminController {
                 .collect(Collectors.toList());
         listaRepartidoresActivos = FXCollections.observableArrayList(activos);
         cbRepartidores.setItems(listaRepartidoresActivos);
+    }
+
+    private void configurarTablaEnviosAsignacion() {
+        colEnvioIdAsignacion.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(data.getValue().getIdEnvio()));
+        colEnvioEstadoAsignacion.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(data.getValue().getEstado().name()));
+
+
+        tablaEnviosAsignacion.setItems(listaEnvios);
     }
 
     @FXML
@@ -328,13 +338,16 @@ public class AdminController {
             mostrarAlerta("Éxito", "Repartidor asignado correctamente.");
             cargarEnvios();
             cargarRepartidoresActivos();
+
+            tablaEnviosAsignacion.setItems(FXCollections.observableArrayList(listaEnvios));
+            tablaEnviosAsignacion.refresh();
         } else {
             mostrarAlerta("Error", "No se pudo asignar el repartidor.");
         }
     }
 
 
-    // --- Alerta ---
+
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alerta = new Alert(Alert.AlertType.INFORMATION);
         alerta.setTitle(titulo);
@@ -343,3 +356,4 @@ public class AdminController {
         alerta.showAndWait();
     }
 }
+

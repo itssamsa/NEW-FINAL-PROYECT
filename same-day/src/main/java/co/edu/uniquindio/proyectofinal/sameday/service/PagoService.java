@@ -22,7 +22,6 @@ public class PagoService {
         return new ArrayList<>(repo.values());
     }
 
-    // 🔹 Nuevo método: listar pagos por rango de fechas
     public List<Pago> listarPorRangoFechas(LocalDateTime inicio, LocalDateTime fin) {
         return repo.values().stream()
                 .filter(p -> !p.getFecha().isBefore(inicio) && !p.getFecha().isAfter(fin))
