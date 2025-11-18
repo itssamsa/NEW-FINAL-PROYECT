@@ -158,39 +158,41 @@
             </VBox>
 
             <VBox fx:id="panelAsignacion" spacing="10" visible="false">
-                <padding><Insets bottom="15" left="15" right="15" top="15" /></padding>
+                <padding>
+                    <Insets bottom="15" left="15" right="15" top="15" />
+                </padding>
 
                 <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Asignación de Envíos" />
 
                 <GridPane hgap="10" vgap="10">
-                    <columnConstraints>
-                        <ColumnConstraints percentWidth="25" />
-                        <ColumnConstraints percentWidth="75" />
-                    </columnConstraints>
 
                     <Label text="Envío:" />
-                    <ComboBox fx:id="cbEnvios" GridPane.columnIndex="1" />
+                    <ComboBox fx:id="cbEnvios" GridPane.columnIndex="1"/>
 
-                    <Label text="Repartidor:" GridPane.rowIndex="1" />
-                    <ComboBox fx:id="cbRepartidores" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-               <rowConstraints>
-                  <RowConstraints />
-                  <RowConstraints />
-               </rowConstraints>
+                    <Label text="Repartidor:" GridPane.rowIndex="1"/>
+                    <ComboBox fx:id="cbRepartidores" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
                 </GridPane>
 
-                <HBox spacing="10">
-                    <Button fx:id="btnAsignar" style="-fx-background-color: #50C878; -fx-text-fill: white;" text="Asignar Repartidor" />
-                </HBox>
+                <Button fx:id="btnAsignar"
+                        onAction="#asignarRepartidorAEnvio"
+                        style="-fx-background-color: #50C878; -fx-text-fill: white;"
+                        text="Asignar"/>
+
+                <Button fx:id="btnRefrescarAsignacion"
+                        onAction="#actualizarTablaAsignacion"
+                        style="-fx-background-color: #50C878; -fx-text-fill: white;"
+                        text="🔄 Actualizar asignación"/>
 
                 <TableView fx:id="tablaEnviosAsignacion" prefHeight="200">
                     <columns>
-                        <TableColumn fx:id="colEnvioIdAsignacion" prefWidth="200" text="ID Envío" />
-                        <TableColumn fx:id="colEnvioEstadoAsignacion" prefWidth="200" text="Estado" />
+                        <TableColumn fx:id="colEnvioIdAsignacion" text="ID Envío" prefWidth="150"/>
+                        <TableColumn fx:id="colEnvioEstadoAsignacion" text="Estado" prefWidth="150"/>
                     </columns>
                 </TableView>
 
             </VBox>
+
 
         </StackPane>
 

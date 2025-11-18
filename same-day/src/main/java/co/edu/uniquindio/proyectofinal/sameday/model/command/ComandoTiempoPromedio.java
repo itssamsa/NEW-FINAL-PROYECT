@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ComandoTiempoPromedio implements ComandoMetrica {
 
-    private double tiempoPromedioHoras = 0.0;
+    private double tiempoPromedioMinutos = 0.0;
 
     @Override
     public void ejecutar() {
@@ -18,7 +18,7 @@ public class ComandoTiempoPromedio implements ComandoMetrica {
                 .getEnvioService()
                 .listar();
 
-        long totalHoras = 0;
+        double totalMinutos = 0;
         int entregados = 0;
 
         for (Envio e : envios) {
@@ -31,19 +31,19 @@ public class ComandoTiempoPromedio implements ComandoMetrica {
                         e.getFechaEstimadaEntrega()
                 );
 
-                totalHoras += d.toHours();
+                totalMinutos += d.toMillis() / 60000.0;
                 entregados++;
             }
         }
 
         if (entregados > 0) {
-            tiempoPromedioHoras = (double) totalHoras / entregados;
+            tiempoPromedioMinutos = totalMinutos / entregados;
         } else {
-            tiempoPromedioHoras = 0.0;
+            tiempoPromedioMinutos = 0.0;
         }
     }
 
-    public double getTiempoPromedioHoras() {
-        return tiempoPromedioHoras;
+    public double getTiempoPromedioMinutos() {
+        return tiempoPromedioMinutos;
     }
 }

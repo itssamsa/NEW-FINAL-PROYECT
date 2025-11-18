@@ -119,6 +119,8 @@ public class MisDireccionesController {
         direccionSeleccionada.setCiudad(txtCiudad.getText());
         direccionSeleccionada.setCoordenadas(txtCoordenadas.getText());
 
+        tablaDirecciones.refresh(); // ← CLAVE
+
         cargarDirecciones(usuarioActual);
         limpiarCampos();
         mostrarAlerta("Éxito", "Dirección actualizada correctamente.");

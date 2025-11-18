@@ -71,12 +71,13 @@ public class PanelMetricasController {
         invoker.setComando(comando);
         invoker.ejecutarComando();
 
-        double horas = comando.getTiempoPromedioHoras();
+        double minutos = comando.getTiempoPromedioMinutos();
 
         if (lblTiempoPromedio != null) {
-            lblTiempoPromedio.setText(String.format("%.2f horas", horas));
+            lblTiempoPromedio.setText(String.format("%.2f minutos", minutos));
         }
     }
+
 
     public void actualizarMetricas() {
         mostrarServiciosMasUsados();

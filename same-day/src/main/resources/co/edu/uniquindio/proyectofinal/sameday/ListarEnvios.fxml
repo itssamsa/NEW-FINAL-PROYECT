@@ -10,9 +10,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="741.0" prefWidth="1427.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.ListarEnviosController">
+<AnchorPane prefHeight="512.0" prefWidth="795.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.proyectofinal.sameday.viewController.ListarEnviosController">
 
-    <VBox alignment="CENTER" prefHeight="472.0" prefWidth="1063.0" spacing="10" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="354.0" AnchorPane.topAnchor="10">
+    <VBox alignment="CENTER" layoutX="9.0" prefHeight="472.0" prefWidth="756.0" spacing="10" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="10">
 
         <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="📦 Listado de Envíos" />
 
@@ -26,17 +26,15 @@
             <Button onAction="#filtrarEnvios" text="Filtrar" />
         </HBox>
 
-        <TableView fx:id="tablaEnvios" prefHeight="400" prefWidth="1260.0">
+        <TableView fx:id="tablaEnvios" prefHeight="400" prefWidth="754.0">
             <columns>
                 <TableColumn fx:id="colIdEnvio" prefWidth="100" text="ID Envío" />
-                <TableColumn fx:id="colUsuario" prefWidth="150" text="Usuario" />
-                <TableColumn fx:id="colEstado" prefWidth="120" text="Estado" />
-                <TableColumn fx:id="colFecha" prefWidth="150" text="Fecha Creación" />
-                <TableColumn fx:id="colCosto" prefWidth="100" text="Costo Total" />
+                <TableColumn fx:id="colUsuario" prefWidth="174.0" text="Usuario" />
+                <TableColumn fx:id="colEstado" prefWidth="150.0" text="Estado" />
+                <TableColumn fx:id="colFecha" prefWidth="167.0" text="Fecha Creación" />
+                <TableColumn fx:id="colCosto" prefWidth="168.0" text="Costo Total" />
             </columns>
         </TableView>
 
     </VBox>
-   <AnchorPane layoutX="374.0" layoutY="519.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #a6f5b9;" />
-   <AnchorPane layoutX="1177.0" layoutY="200.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #a6f5b9;" />
 </AnchorPane>
